@@ -1075,7 +1075,7 @@ Instrument *load_instrument(int dr, int b, int prog)
 		}
 		/* panning */
 		if (ip != NULL && bank->tone[prog].pan != -1) {
-			pan = ((int) bank->tone[prog].pan & 0x7f) - 64;
+			pan = ((int) bank->tone[prog].pan & 0x7f); /* - 64 */;
 			for (i = 0; i < ip->samples; i++) {
 				panning = (int) ip->sample[i].panning + pan;
 				panning = (panning < 0) ? 0
