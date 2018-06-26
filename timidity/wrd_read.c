@@ -45,13 +45,7 @@
 
 /*#define DEBUG 1*/
 
-#if  defined(JAPANESE) || defined(__MACOS__)
-#define IS_MULTI_BYTE(c)	( ((c)&0x80) && ((0x1 <= ((c)&0x7F) && ((c)&0x7F) <= 0x1f) ||\
-				 (0x60 <= ((c)&0x7F) && ((c)&0x7F) <= 0x7c)))
-#define IS_SJIS_ZENKAKU_SPACE(p) ((p)[0] == 0x81 && (p)[1] == 0x40)
-#else
 #define IS_MULTI_BYTE(c)	0
-#endif /* JAPANESE */
 
 #define WRDENDCHAR 26 /* ^Z */
 #define MAXTOKLEN 255

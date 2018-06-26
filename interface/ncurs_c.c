@@ -94,10 +94,6 @@ int PDC_set_ctrl_break(bool setting);
 /* Define WREFRESH_CACHED if wrefresh isn't clear the internal cache */
 #define WREFRESH_CACHED 1
 
-#ifdef JAPANESE
-#define MULTIBUTE_CHAR_BUGFIX 1 /* Define to fix multibute overwrite bug */
-#endif /* JAPANESE */
-
 #define MIDI_TITLE
 #define DISPLAY_MID_MODE
 #define COMMAND_BUFFER_SIZE 4096
@@ -114,11 +110,7 @@ int PDC_set_ctrl_break(bool setting);
 #endif /* MIDI_TITLE */
 
 #ifdef DISPLAY_MID_MODE
-#if defined(JAPANESE) && !defined(__WATCOMC__)
-#include "mid-j.defs"
-#else
 #include "mid.defs"
-#endif /* JAPANESE */
 #endif /* DISPLAY_MID_MODE */
 
 #define MAX_U_PREFIX 256

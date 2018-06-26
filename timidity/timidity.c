@@ -4066,11 +4066,6 @@ static int parse_opt_h(const char *arg)
 "                      ascii : Convert unreadable characters to '.' (0x2e)",
 "                      nocnv : No conversion",
 "                      1251  : Convert from windows-1251 to koi8-r",
-#ifdef JAPANESE
-"                      euc   : EUC-japan",
-"                      jis   : JIS",
-"                      sjis  : shift JIS",
-#endif /* JAPANESE */
 "  -U         --[no-]unload-instruments",
 "               Unload instruments from memory between MIDI files",
 "  -V power   --volume-curve=power",

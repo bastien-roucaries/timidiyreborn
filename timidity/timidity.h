@@ -277,32 +277,7 @@ typedef double FLOAT_T;
 /* To use GS drumpart setting. */
 #define GS_DRUMPART
 
-/**** Japanese section ****/
-/* To use Japanese kanji code. */
-#define JAPANESE
-
-/* Select output text code:
- * "AUTO"	- Auto conversion by `LANG' environment variable (UNIX only)
- * "ASCII"	- Convert unreadable characters to '.'(0x2e)
- * "NOCNV"	- No conversion
- * "EUC"	- EUC
- * "JIS"	- JIS
- * "SJIS"	- shift JIS
- */
-
-#ifndef JAPANESE
-/* Not japanese (Select "ASCII" or "NOCNV") */
 #define OUTPUT_TEXT_CODE "ASCII"
-#else
-/* Japanese */
-#ifndef __W32__
-/* UNIX (Select "AUTO" or "ASCII" or "NOCNV" or "EUC" or "JIS" or "SJIS") */
-#define OUTPUT_TEXT_CODE "AUTO"
-#else
-/* Windows (Select "ASCII" or "NOCNV" or "SJIS") */
-#define OUTPUT_TEXT_CODE "SJIS"
-#endif
-#endif
 
 
 /* Undefine if you don't use modulation wheel MIDI controls.

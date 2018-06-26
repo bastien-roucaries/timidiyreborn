@@ -36,7 +36,6 @@
 
 #define	AU_MACOS
 #undef  TILD_SCHEME_ENABLE
-#undef  JAPANESE
 #define ANOTHER_MAIN
 #define DEFAULT_PATH	""
 #undef  CONFIG_FILE

@@ -34,8 +34,6 @@ libutils_a_SOURCES = \
 	mblock.h \
 	memb.c \
 	memb.h \
-	nkflib.c \
-	nkflib.h \
 	strtab.c \
 	strtab.h \
 	support.c \

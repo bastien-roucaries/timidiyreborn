@@ -64,7 +64,6 @@
 #include "output.h"
 #include "controls.h"
 #include "arc.h"
-#include "nkflib.h"
 #include "wrd.h"
 #include "strtab.h"
 #include "support.h"
@@ -911,162 +910,9 @@ static void code_convert_dump(char *in, char *out, int maxlen, char *ocode)
     }
 }
 
-#ifdef JAPANESE
-static void code_convert_japan(char *in, char *out, int maxlen,
-			       char *icode, char *ocode)
-{
-    static char *mode = NULL, *wrd_mode = NULL;
-
-    if(ocode != NULL && ocode != (char *)-1)
-    {
-	nkf_convert(in, out, maxlen, icode, ocode);
-	if(out != NULL)
-	    out[maxlen] = '\0';
-	return;
-    }
-
-    if(mode == NULL || wrd_mode == NULL)
-    {
-	mode = output_text_code;
-	if(mode == NULL || strstr(mode, "AUTO"))
-	{
-#ifndef __W32__
-	    mode = getenv("LANG");
-#else
-	    mode = "SJIS";
-	    wrd_mode = "SJISK";
-#endif
-	    if(mode == NULL || *mode == '\0')
-	    {
-		mode = "ASCII";
-		wrd_mode = mode;
-	    }
-	}
-
-	if(strstr(mode, "ASCII") ||
-	   strstr(mode, "ascii"))
-	{
-	    mode = "ASCII";
-	    wrd_mode = mode;
-	}
-	else if(strstr(mode, "NOCNV") ||
-		strstr(mode, "nocnv"))
-	{
-	    mode = "NOCNV";
-	    wrd_mode = mode;
-	}
-#ifndef	HPUX
-	else if(strstr(mode, "EUC") ||
-		strstr(mode, "euc") ||
-		strstr(mode, "ujis") ||
-		strcmp(mode, "japanese") == 0)
-	{
-	    mode = "EUC";
-	    wrd_mode = "EUCK";
-	}
-	else if(strstr(mode, "SJIS") ||
-		strstr(mode, "sjis"))
-	{
-	    mode = "SJIS";
-	    wrd_mode = "SJISK";
-	}
-#else
-	else if(strstr(mode, "EUC") ||
-		strstr(mode, "euc") ||
-		strstr(mode, "ujis"))
-	{
-	    mode = "EUC";
-	    wrd_mode = "EUCK";
-	}
-	else if(strstr(mode, "SJIS") ||
-		strstr(mode, "sjis") ||
-		strcmp(mode, "japanese") == 0)
-	{
-	    mode = "SJIS";
-	    wrd_mode = "SJISK";
-	}
-#endif	/* HPUX */
-	else if(strstr(mode,"JISk")||
-		strstr(mode,"jisk"))
-	{
-	    mode = "JISK";
-	    wrd_mode = mode;
-	}
-	else if(strstr(mode, "JIS") ||
-		strstr(mode, "jis"))
-	{
-	    mode = "JIS";
-	    wrd_mode = "JISK";
-	}
-	else if(strcmp(mode, "ja") == 0)
-	{
-	    mode = "EUC";
-	    wrd_mode = "EUCK";
-	}
-	else
-	{
-	    mode = "NOCNV";
-	    wrd_mode = mode;
-	}
-    }
-
-    if(ocode == NULL)
-    {
-	if(strcmp(mode, "NOCNV") == 0)
-	{
-	    if(out == NULL)
-		return;
-	    strncpy(out, in, maxlen);
-	    out[maxlen] = '\0';
-	}
-	else if(strcmp(mode, "ASCII") == 0)
-	    code_convert_dump(in, out, maxlen, "ASCII");
-	else
-	{
-	    nkf_convert(in, out, maxlen, icode, mode);
-	    if(out != NULL)
-		out[maxlen] = '\0';
-	}
-    }
-    else if(ocode == (char *)-1)
-    {
-	if(strcmp(wrd_mode, "NOCNV") == 0)
-	{
-	    if(out == NULL)
-		return;
-	    strncpy(out, in, maxlen);
-	    out[maxlen] = '\0';
-	}
-	else if(strcmp(wrd_mode, "ASCII") == 0)
-	    code_convert_dump(in, out, maxlen, "ASCII");
-	else
-	{
-	    nkf_convert(in, out, maxlen, icode, wrd_mode);
-	    if(out != NULL)
-		out[maxlen] = '\0';
-	}
-    }
-}
-#endif /* JAPANESE */
 
 void code_convert(char *in, char *out, int outsiz, char *icode, char *ocode)
 {
-#if !defined(MIME_CONVERSION) && defined(JAPANESE)
-    int i;
-    /* check ASCII string */
-    for(i = 0; in[i]; i++)
-	if(in[i] < ' ' || in[i] >= 127)
-	    break;
-    if(!in[i])
-    {
-	if(out == NULL)
-	    return;
-	strncpy(out, in, outsiz - 1);
-	out[outsiz - 1] = '\0';
-	return; /* All ASCII string */
-    }
-#endif /* MIME_CONVERSION */
-
     if(ocode != NULL && ocode != (char *)-1)
     {
 	if(strcasecmp(ocode, "nocnv") == 0)
@@ -1092,11 +938,7 @@ void code_convert(char *in, char *out, int outsiz, char *icode, char *ocode)
 	}
     }
 
-#if defined(JAPANESE)
-    code_convert_japan(in, out, outsiz - 1, icode, ocode);
-#else
     code_convert_dump(in, out, outsiz - 1, ocode);
-#endif
 }
 
 /* EAW -- insert stuff from playlist files
