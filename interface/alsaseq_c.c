@@ -484,6 +484,7 @@ static void stop_playing(void)
 
 static void doit(struct seq_context *ctxp)
 {
+	int err, timeout_val = 10;
 	for (;;) {
 		while (snd_seq_event_input_pending(ctxp->handle, 1)) {
 			if (do_sequencer(ctxp))
@@ -517,10 +518,20 @@ static void doit(struct seq_context *ctxp)
 			FD_SET(ctxp->fd, &rfds);
 			if (! IS_STREAM_TRACE) {
 				struct timeval timeout;
-				timeout.tv_sec = 0;
-				timeout.tv_usec = 10000; /* 10ms */
-				if (select(ctxp->fd + 1, &rfds, NULL, NULL, &timeout) < 0)
+				timeout.tv_sec = (timeout_val / 1000);
+				timeout.tv_usec = (timeout_val % 1000) * 1000;
+				err = select(ctxp->fd + 1, &rfds, NULL, NULL, timeout_val < 0 ? NULL : &timeout);
+				if (err < 0) {
 					goto __done;
+				} else if (err == 0) {
+					if (timeout_val < 1024) {
+						timeout_val+=timeout_val;
+					} else {
+						timeout_val = -1;
+					}
+				} else {
+					timeout_val = 10;
+				}
 			} else {
 				if (select(ctxp->fd + 1, &rfds, NULL, NULL, NULL) < 0)
 					goto __done;
