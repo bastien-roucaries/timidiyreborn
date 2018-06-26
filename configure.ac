@@ -2321,9 +2321,7 @@ AC_SUBST(pkglibdir)
 
 AC_CONFIG_FILES([
   Makefile
-  autoconf/Makefile
   common.makefile
-  configs/Makefile
   doc/Makefile
   doc/C/Makefile
   doc/ja_JP.eucJP/Makefile

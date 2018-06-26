@@ -21,7 +21,6 @@
 ACLOCAL_AMFLAGS = -I autoconf
 M4DIR = autoconf
 SUBDIRS = \
-	autoconf \
 	utils \
 	libarc \
 	libunimod \
@@ -29,8 +28,7 @@ SUBDIRS = \
 	timidity \
 	windrv \
 	doc \
-	script \
-	configs
+	script
 
 EXTRA_DIST = \
 	ChangeLog.1 \
