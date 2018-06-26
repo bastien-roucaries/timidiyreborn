@@ -1505,7 +1505,7 @@ static int do_sequencer(void)
 	  default:
 	    ctl.cmsg(CMSG_ERROR, VERB_NORMAL,
 		     "Undefined data 0x%02x", data_buffer[offset - 1]);
-	    send_status(401, "Wrong data is recieved (seqcmd=0x%02x)",
+	    send_status(401, "Wrong data is received (seqcmd=0x%02x)",
 			cmd);
 	    stop_playing();
 	    return 1;
