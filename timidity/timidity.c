@@ -6111,11 +6111,11 @@ int main(int argc, char **argv)
 				}
 			}
 			ctl->cmsg(CMSG_FATAL, VERB_NORMAL,
-					"%s: Can't read any configuration file.\n"
+					"%s: Error reading configuration file.\n"
 					"Please check %s or %s", program_name, config1, config2);
 #else
 			ctl->cmsg(CMSG_FATAL, VERB_NORMAL,
-					"%s: Can't read any configuration file.\n"
+					"%s: Error reading configuration file.\n"
 					"Please check " CONFIG_FILE, program_name);
 #endif /* __W32__ */
 		} else
