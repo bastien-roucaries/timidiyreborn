@@ -1872,7 +1872,7 @@ static int Parse(int c)
   }
   return 0;
 }
-void AddLine(const unsigned char *str,int len)
+void AddLine(const char *str,int len)
 {
   Linbuf *ptr;
   int i,j;

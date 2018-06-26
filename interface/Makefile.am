@@ -175,7 +175,7 @@ libinterface_LIBADD = \
 	$(WRD_OBJS) \
 	$(WRD_WINCON_OBJS) \
 	$(SOUND_SPEC_OBJS)
-	
+
 libinterface_a_LIBADD=$(libinterface_LIBADD)
 
 libinterface_dep = \
@@ -260,7 +260,7 @@ clean:
 
 tclIndex: $(TCLSRCS)
 	rm -f tclIndex
-	echo 'auto_mkindex $(srcdir) *.tcl; exit' | $(TCLSH)
+	echo "auto_mkindex . *.tcl" | tclsh
 
 if ENABLE_TCLTK
 install_tk = install.tk

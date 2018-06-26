@@ -26,7 +26,7 @@
 extern void WinEvent(void);
 extern void EndWin(void);
 extern void WinFlush(void);
-extern void AddLine(const unsigned char *,int);
+extern void AddLine(const char *,int);
 extern int OpenWRDWindow(char *opt);
 extern void CloseWRDWindow(void);
 extern void x_RedrawControl(int flag);
