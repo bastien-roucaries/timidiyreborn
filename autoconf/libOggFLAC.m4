@@ -58,7 +58,7 @@ dnl
 dnl Now check if the installed libOggFLAC is sufficiently new.
 dnl
       rm -f conf.libOggFLACtest
-      AC_TRY_RUN([
+      AC_COMPILE_IFELSE([
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -70,7 +70,7 @@ int main ()
   return 0;
 }
 
-],, no_libOggFLAC=yes,[echo $ac_n "cross compiling; assumed OK... $ac_c"])
+],, no_libOggFLAC=yes)
        CFLAGS="$ac_save_CFLAGS"
        LIBS="$ac_save_LIBS"
   fi
