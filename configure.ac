@@ -858,7 +858,6 @@ dnl alsa(d):    ALSA pcm device
 dnl sun(d):     SunOS /dev/audio
 dnl hpux(d):    HPUX /dev/audio
 dnl irix(d):    IRIX audio
-dnl mme(d):     OSF/1 MME
 dnl sb_dsp(d):  BSD/OS 2.0 /dev/sb_dsp
 dnl w32(d):     Windows MMS
 dnl darwin(d):  Mac OS X pcm device
@@ -876,7 +875,7 @@ dnl gogo(g):    MP3 GOGO
 dnl jack(j):    JACK
 dnl ao(O):      Libao
 
-audio_targets='default oss alsa sun hpux irix mme sb_dsp w32 alib nas arts esd vorbis flac gogo portaudio npipe jack ao'
+audio_targets='default oss alsa sun hpux irix sb_dsp w32 alib nas esd vorbis flac gogo portaudio npipe jack ao'
 
 AC_ARG_WITH(nas-library,
   AS_HELP_STRING([--with-nas-library=library], [NAS absolute library path(Don't use -laudio)]))
@@ -891,7 +890,6 @@ AC_ARG_ENABLE(audio,
                               sun:       SunOS /dev/audio
                               hpux:      HPUX /dev/audio
                               irix:      IRIX audio library
-                              mme:       OSF/1 MME
                               sb_dsp:    BSD/OS 2.0 /dev/sb_dsp
                               w32:       Windows MMS
                               darwin:    Darwin CoreAudio
@@ -963,9 +961,6 @@ if test "x$au_enable_default" = xyes; then
     ;;
   *-*-hpux*)
     au_enable_hpux=yes
-    ;;
-  *-dec-*)
-    au_enable_mme=yes
     ;;
   *irix*)
     au_enable_irix=yes
@@ -1093,21 +1088,6 @@ if test "x$au_enable_irix" = xyes; then
   esac
   SYSEXTRAS="$SYSEXTRAS audriv_a.c audriv_al.c"
   EXTRALIBS="$EXTRASLIBS -laudio"
-else
-  AC_MSG_RESULT(no)
-fi
-
-dnl OSF/1 MME
-AC_MSG_CHECKING(enable_audio=mme)
-if test "x$au_enable_mme" = xyes; then
-  case "$target" in
-    *-dec-*) AC_MSG_RESULT(yes) ;;
-    *) AC_MSG_WARN(may not work on $target) ;;
-  esac
-  EXTRADEFS="$EXTRADEFS -DAU_DEC -DAU_AUDRIV"
-  SYSEXTRAS="$SYSEXTRAS audriv_a.c audriv_mme.c"
-  CPPFLAGS="$CPPFLAGS -I/usr/opt/MME210/include"
-  EXTRALIBS="$EXTRALIBS /usr/opt/MME220/lib/libmme.a"
 else
   AC_MSG_RESULT(no)
 fi
@@ -1507,7 +1487,6 @@ case ".$DEFAULT_PLAYMODE" in
   .sun)      TIMIDITY_OUTPUT_ID=d ;;
   .hpux)     TIMIDITY_OUTPUT_ID=d ;;
   .irix)     TIMIDITY_OUTPUT_ID=d ;;
-  .mme)      TIMIDITY_OUTPUT_ID=d ;;
   .sb_dsp)   TIMIDITY_OUTPUT_ID=d ;;
   .darwin)   TIMIDITY_OUTPUT_ID=d ;;
   .w32)      TIMIDITY_OUTPUT_ID=d ;;

@@ -114,7 +114,6 @@ EXTRA_timidity_SOURCES = \
 	audriv.h \
 	audriv_a.c \
 	audriv_al.c \
-	audriv_mme.c \
 	audriv_none.c \
 	darwin_a.c \
 	dl_w32.c \
