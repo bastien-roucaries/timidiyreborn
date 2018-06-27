@@ -195,12 +195,6 @@ case "$target" in
     test -n "$SHLD" || SHLD="ld -b"
     so="sl"
     ;;
-  *-sgi-irix*)
-    dnl IRIX cc needs -signed option
-    case ".$CC" in .cc*) EXTRACFLAGS="-signed";; esac
-    test -n "$SHLD" || SHLD="cc -shared -all"
-    so="so"
-    ;;
   *-*-netbsd*)
     test -n "$SHLD" || SHLD="$CC -shared -nostartfiles"
     so="so"
@@ -857,7 +851,6 @@ dnl oss(d):     OSS /dev/dsp
 dnl alsa(d):    ALSA pcm device
 dnl sun(d):     SunOS /dev/audio
 dnl hpux(d):    HPUX /dev/audio
-dnl irix(d):    IRIX audio
 dnl sb_dsp(d):  BSD/OS 2.0 /dev/sb_dsp
 dnl w32(d):     Windows MMS
 dnl darwin(d):  Mac OS X pcm device
@@ -873,7 +866,7 @@ dnl gogo(g):    MP3 GOGO
 dnl jack(j):    JACK
 dnl ao(O):      Libao
 
-audio_targets='default oss alsa sun hpux irix sb_dsp w32 alib nas vorbis flac gogo portaudio npipe jack ao'
+audio_targets='default oss alsa sun hpux sb_dsp w32 alib nas vorbis flac gogo portaudio npipe jack ao'
 
 AC_ARG_WITH(nas-library,
   AS_HELP_STRING([--with-nas-library=library], [NAS absolute library path(Don't use -laudio)]))
@@ -887,7 +880,6 @@ AC_ARG_ENABLE(audio,
                               oss:       OSS /dev/dsp
                               sun:       SunOS /dev/audio
                               hpux:      HPUX /dev/audio
-                              irix:      IRIX audio library
                               sb_dsp:    BSD/OS 2.0 /dev/sb_dsp
                               w32:       Windows MMS
                               darwin:    Darwin CoreAudio
@@ -954,9 +946,6 @@ if test "x$au_enable_default" = xyes; then
     ;;
   *-*-hpux*)
     au_enable_hpux=yes
-    ;;
-  *irix*)
-    au_enable_irix=yes
     ;;
   *-*-sunos4*)
     au_enable_sun=yes
@@ -1061,26 +1050,6 @@ if test "x$au_enable_hpux" = xyes; then
   esac
   EXTRADEFS="$EXTRADEFS -DAU_HPUX_AUDIO"
   SYSEXTRAS="$SYSEXTRAS hpux_d_a.c"
-else
-  AC_MSG_RESULT(no)
-fi
-
-dnl Irix's
-AC_MSG_CHECKING(enable_audio=irix)
-if test "x$au_enable_irix" = xyes; then
-  case "$target" in
-    *-sgi-irix5*|*-sgi-irix6.2)
-      EXTRADEFS="$EXTRADEFS -DAU_AUDRIV -DSGI_OLDAL"
-      AC_MSG_RESULT(yes)
-      ;;
-    *-sgi-irix6*)
-      EXTRADEFS="$EXTRADEFS -DAU_AUDRIV -DSGI_NEWAL"
-      AC_MSG_RESULT(yes)
-      ;;
-    *) AC_MSG_WARN(may not work on $target) ;;
-  esac
-  SYSEXTRAS="$SYSEXTRAS audriv_a.c audriv_al.c"
-  EXTRALIBS="$EXTRASLIBS -laudio"
 else
   AC_MSG_RESULT(no)
 fi
@@ -1415,7 +1384,6 @@ case ".$DEFAULT_PLAYMODE" in
   .alsa)     TIMIDITY_OUTPUT_ID=s ;;
   .sun)      TIMIDITY_OUTPUT_ID=d ;;
   .hpux)     TIMIDITY_OUTPUT_ID=d ;;
-  .irix)     TIMIDITY_OUTPUT_ID=d ;;
   .sb_dsp)   TIMIDITY_OUTPUT_ID=d ;;
   .darwin)   TIMIDITY_OUTPUT_ID=d ;;
   .w32)      TIMIDITY_OUTPUT_ID=d ;;
