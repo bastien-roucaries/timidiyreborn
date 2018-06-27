@@ -2050,14 +2050,6 @@ AC_ARG_ENABLE(offix,
     fi
   ])
 
-dnl Network section
-AC_ARG_ENABLE(network,
-  AS_HELP_STRING([--enable-network], [Enable network support          (default is no)]),
-  [ if test "$enableval" = "yes"; then
-      AC_DEFINE(SUPPORT_SOCKET,1,Define to 1 if you need network support)
-    fi ])
-AM_CONDITIONAL(ENABLE_NETWORK, test "x$enable_network" = "xyes")
-
 dnl Sound Spectrogram Viewer
 AC_ARG_ENABLE(spectrogram,
   AS_HELP_STRING([--enable-spectrogram], [Enable Sound Spectrogram Viewer (default is no)]),
@@ -2198,7 +2190,6 @@ AC_CONFIG_FILES([
   common.makefile
   doc/Makefile
   doc/C/Makefile
-  doc/ja_JP.eucJP/Makefile
   interface/Makefile
   interface/motif_bitmaps/Makefile
   interface/bitmaps/Makefile

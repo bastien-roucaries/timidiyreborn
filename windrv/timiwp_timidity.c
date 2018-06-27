@@ -214,16 +214,6 @@ int timiwp_main_close(void)
 	free_effect_buffers();
 	for (i = 0; i < MAX_CHANNELS; i++) {free_drum_effect(i);}
 #endif
-#ifdef SUPPORT_SOCKET
-	if (url_user_agent)
-		free(url_user_agent);
-	if (url_http_proxy_host)
-		free(url_http_proxy_host);
-	if (url_ftp_proxy_host)
-		free(url_ftp_proxy_host);
-	if (user_mailaddr)
-		free(user_mailaddr);
-#endif
 #if 0
 	if (pcm_alternate_file)
 		free(pcm_alternate_file);

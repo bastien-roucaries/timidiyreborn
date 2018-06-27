@@ -342,11 +342,6 @@ int is_url_prefix(const char *name)
     static char *url_proto_names[] =
     {
 	"file:",
-#ifdef SUPPORT_SOCKET
-	"http://",
-	"ftp://",
-	"news://",
-#endif /* SUPPORT_SOCKET */
 	"mime:",
 	NULL
     };

@@ -251,20 +251,6 @@ typedef double FLOAT_T;
  */
 #define DEFAULT_CACHE_DATA_SIZE (2*1024*1024)
 
-
-#ifdef SUPPORT_SOCKET
-/* Please define your mail domain address. */
-#ifndef MAIL_DOMAIN
-#define MAIL_DOMAIN "@localhost"
-#endif /* MAIL_DOMAIN */
-
-/* Please define your mail name if you are at Windows.
- * Otherwise (maybe unix), undefine this macro
- */
-/* #define MAIL_NAME "somebody" */
-#endif /* SUPPORT_SOCKET */
-
-
 /* Where do you want to put temporary file into ?
  * If you are in UNIX, you can undefine this macro. If TMPDIR macro is
  * undefined, the value is used in environment variable `TMPDIR'.

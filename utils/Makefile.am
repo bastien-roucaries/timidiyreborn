@@ -60,10 +60,6 @@ if NEEDGETOPT
 GETOPT_OBJS = getopt.$(OBJEXT)
 endif
 
-if ENABLE_NETWORK
-NET_OBJS = net.$(OBJEXT) getaddrinfo.$(OBJEXT)
-endif
-
 if ENABLE_SOUND_SPEC
 SOUND_SPEC_OBJS = fft.$(OBJEXT)
 endif

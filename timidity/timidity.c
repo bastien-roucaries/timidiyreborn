@@ -547,12 +547,6 @@ extern struct URL_module URL_module_file;
 #ifndef __MACOS__
 extern struct URL_module URL_module_dir;
 #endif /* __MACOS__ */
-#ifdef SUPPORT_SOCKET
-extern struct URL_module URL_module_http;
-extern struct URL_module URL_module_ftp;
-extern struct URL_module URL_module_news;
-extern struct URL_module URL_module_newsgroup;
-#endif /* SUPPORT_SOCKET */
 #ifdef HAVE_POPEN
 extern struct URL_module URL_module_pipe;
 #endif /* HAVE_POPEN */
@@ -563,12 +557,6 @@ MAIN_INTERFACE struct URL_module *url_module_list[] =
 #ifndef __MACOS__
     &URL_module_dir,
 #endif /* __MACOS__ */
-#ifdef SUPPORT_SOCKET
-    &URL_module_http,
-    &URL_module_ftp,
-    &URL_module_news,
-    &URL_module_newsgroup,
-#endif /* SUPPORT_SOCKET */
 #if !defined(__MACOS__) && defined(HAVE_POPEN)
     &URL_module_pipe,
 #endif
@@ -1542,130 +1530,6 @@ MAIN_INTERFACE int read_config_file(char *name, int self, int allow_missing_file
 		continue;
 	    }
 	}
-	/* #extension HTTPproxy hostname:port */
-	else if(strcmp(w[0], "HTTPproxy") == 0)
-	{
-            char r_bracket, l_bracket;
-
-	    if(words < 2)
-	    {
-		ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
-			  "%s: line %d: No proxy name given",
-			  name, line);
-		CHECKERRLIMIT;
-		continue;
-	    }
-	    /* If network is not supported, this extension is ignored. */
-#ifdef SUPPORT_SOCKET
-	    url_http_proxy_host = safe_strdup(w[1]);
-	    if((cp = strrchr(url_http_proxy_host, ':')) == NULL)
-	    {
-		ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
-			  "%s: line %d: Syntax error", name, line);
-		CHECKERRLIMIT;
-		continue;
-	    }
-	    *cp++ = '\0';
-	    if((url_http_proxy_port = atoi(cp)) <= 0)
-	    {
-		ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
-			  "%s: line %d: Port number must be "
-			  "positive number", name, line);
-		CHECKERRLIMIT;
-		continue;
-	    }
-
-            l_bracket = url_http_proxy_host[0];
-            r_bracket = url_http_proxy_host[strlen(url_http_proxy_host) - 1];
-
-            if (l_bracket == '[' || r_bracket == ']')
-            {
-                if (l_bracket != '[' || r_bracket != ']')
-                {
-                    ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
-                              "%s: line %d: Malformed IPv6 address",
-                              name, line);
-                    CHECKERRLIMIT;
-                    continue;
-                }
-                url_http_proxy_host++;
-                url_http_proxy_host[strlen(url_http_proxy_host) - 1] = '\0';
-            } 
-#endif
-	}
-	/* #extension FTPproxy hostname:port */
-	else if(strcmp(w[0], "FTPproxy") == 0)
-	{
-            char l_bracket, r_bracket;
- 
-	    if(words < 2)
-	    {
-		ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
-			  "%s: line %d: No proxy name given",
-			  name, line);
-		CHECKERRLIMIT;
-		continue;
-	    }
-	    /* If network is not supported, this extension is ignored. */
-#ifdef SUPPORT_SOCKET
-	    url_ftp_proxy_host = safe_strdup(w[1]);
-	    if((cp = strrchr(url_ftp_proxy_host, ':')) == NULL)
-	    {
-		ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
-			  "%s: line %d: Syntax error", name, line);
-		CHECKERRLIMIT;
-		continue;
-	    }
-	    *cp++ = '\0';
-	    if((url_ftp_proxy_port = atoi(cp)) <= 0)
-	    {
-		ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
-			  "%s: line %d: Port number "
-			  "must be positive number", name, line);
-		CHECKERRLIMIT;
-		continue;
-	    }
-
-            l_bracket = url_ftp_proxy_host[0];
-            r_bracket = url_ftp_proxy_host[strlen(url_ftp_proxy_host) - 1];
-
-            if (l_bracket == '[' || r_bracket == ']')
-            {
-                if (l_bracket != '[' || r_bracket != ']')
-                {
-                    ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
-                              "%s: line %d: Malformed IPv6 address",
-                              name, line);
-                    CHECKERRLIMIT;
-                    continue;
-                }
-                url_ftp_proxy_host++;
-                url_ftp_proxy_host[strlen(url_ftp_proxy_host) - 1] = '\0';
-            }
-#endif
-	}
-	/* #extension mailaddr somebody@someware.domain.com */
-	else if(strcmp(w[0], "mailaddr") == 0)
-	{
-	    if(words < 2)
-	    {
-		ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
-			  "%s: line %d: No mail address given",
-			  name, line);
-		CHECKERRLIMIT;
-		continue;
-	    }
-	    if(strchr(w[1], '@') == NULL) {
-		ctl->cmsg(CMSG_WARNING, VERB_NOISY,
-			  "%s: line %d: Warning: Mail address %s is not valid",
-			  name, line);
-	    }
-
-	    /* If network is not supported, this extension is ignored. */
-#ifdef SUPPORT_SOCKET
-	    user_mailaddr = safe_strdup(w[1]);
-#endif /* SUPPORT_SOCKET */
-	}
 	/* #extension opt [-]{option}[optarg] */
 	else if (strcmp(w[0], "opt") == 0) {
 		int c, longind, err;
@@ -2461,50 +2325,6 @@ MAIN_INTERFACE int read_config_file(char *name, int self, int allow_missing_file
     close_file(tf);
     return (errcnt == 0) ? READ_CONFIG_SUCCESS : READ_CONFIG_ERROR;
 }
-
-#ifdef SUPPORT_SOCKET
-
-#if defined(__W32__) && !defined(MAIL_NAME)
-#define MAIL_NAME "anonymous"
-#endif /* __W32__ */
-
-#ifdef MAIL_NAME
-#define get_username() MAIL_NAME
-#else /* MAIL_NAME */
-#include <pwd.h>
-static char *get_username(void)
-{
-    char *p;
-    struct passwd *pass;
-
-    /* USER
-     * LOGIN
-     * LOGNAME
-     * getpwnam()
-     */
-
-    if((p = getenv("USER")) != NULL)
-        return p;
-    if((p = getenv("LOGIN")) != NULL)
-        return p;
-    if((p = getenv("LOGNAME")) != NULL)
-        return p;
-
-    pass = getpwuid(getuid());
-    if(pass == NULL)
-        return "nobody";
-    return pass->pw_name;
-}
-#endif /* MAIL_NAME */
-
-static void init_mail_addr(void)
-{
-    char addr[BUFSIZ];
-
-    sprintf(addr, "%s%s", get_username(), MAIL_DOMAIN);
-    user_mailaddr = safe_strdup(addr);
-}
-#endif /* SUPPORT_SOCKET */
 
 static int read_user_config_file(void)
 {
@@ -5444,17 +5264,6 @@ MAIN_INTERFACE void timidity_start_initialize(void)
     {
 	got_a_configuration = 0;
 
-#ifdef SUPPORT_SOCKET
-	init_mail_addr();
-	if(url_user_agent == NULL)
-	{
-	    url_user_agent =
-		(char *)safe_malloc(10 + strlen(timidity_version));
-	    strcpy(url_user_agent, "TiMidity-");
-	    strcat(url_user_agent, timidity_version);
-	}
-#endif /* SUPPORT_SOCKET */
-
 	for(i = 0; url_module_list[i]; i++)
 	    url_add_module(url_module_list[i]);
 	init_string_table(&opt_config_string);
@@ -5475,9 +5284,6 @@ MAIN_INTERFACE void timidity_start_initialize(void)
 	init_gs_vol_table();
 	init_perceived_vol_table();
 	init_gm2_vol_table();
-#ifdef SUPPORT_SOCKET
-	url_news_connection_cache(URL_NEWS_CONN_CACHE);
-#endif /* SUPPORT_SOCKET */
 	for(i = 0; i < NSPECIAL_PATCH; i++)
 	    special_patch[i] = NULL;
 	init_midi_trace();
@@ -5932,10 +5738,6 @@ MAIN_INTERFACE int timidity_play_main(int nfiles, char **files)
 #endif /* SUPPORT_SOUNDSPEC */
 
     free_archive_files();
-#ifdef SUPPORT_SOCKET
-    url_news_connection_cache(URL_NEWS_CLOSE_CACHE);
-#endif /* SUPPORT_SOCKET */
-
     return retval;
 }
 
@@ -6185,16 +5987,6 @@ int main(int argc, char **argv)
 	w32g_uninitialize();
 #endif /* IA_W32G_SYN */
 #endif /* IA_W32GUI */
-#ifdef SUPPORT_SOCKET
-	if (url_user_agent)
-		free(url_user_agent);
-	if (url_http_proxy_host)
-		free(url_http_proxy_host);
-	if (url_ftp_proxy_host)
-		free(url_ftp_proxy_host);
-	if (user_mailaddr)
-		free(user_mailaddr);
-#endif
 #ifdef IA_DYNAMIC
 	if (dynamic_lib_root)
 		free(dynamic_lib_root);

@@ -198,14 +198,6 @@ int get_archive_type(char *archive_name)
     char *p;
     int archive_name_length, delim;
 
-#ifdef SUPPORT_SOCKET
-    int type = url_check_type(archive_name);
-    if(type == URL_news_t)
-	return ARCHIVE_MIME;
-    if(type == URL_newsgroup_t)
-	return ARCHIVE_NEWSGROUP;
-#endif /* SUPPORT_SOCKET */
-
     if(strncmp(archive_name, "mail:", 5) == 0 ||
        strncmp(archive_name, "mime:", 5) == 0)
 	return ARCHIVE_MIME;
@@ -438,45 +430,6 @@ char **expand_archive_names(int *nfiles_in_out, char **files)
 		goto abort_expand;
 	    continue;
 	}
-
-#ifdef SUPPORT_SOCKET
-	if(arc_type == ARCHIVE_NEWSGROUP)
-	{
-	    URL url;
-	    int len1, len2;
-	    char *news_prefix;
-
-	    if((url = url_newsgroup_open(base)) == NULL)
-	    {
-		arc_cant_open(base);
-		continue;
-	    }
-
-	    strncpy(buff, base, sizeof(buff)-1);
-	    p = strchr(buff + 7, '/') + 1; /* news://..../ */
-	    *p = '\0';
-	    news_prefix = strdup_mblock(pool, buff);
-	    len1 = strlen(news_prefix);
-
-	    while(url_gets(url, buff, sizeof(buff)))
-	    {
-		len2 = strlen(buff);
-		p = (char *)new_segment(pool, len1 + len2 + 1);
-		strcpy(p, news_prefix);
-		strcpy(p + len1, buff);
-		one_file[0] = p;
-		one = 1;
-		depth++;
-		expand_archive_names(&one, one_file);
-		depth--;
-	    }
-	    url_close(url);
-	    if(error_flag)
-		goto abort_expand;
-	    continue;
-	}
-#endif /* SUPPORT_SOCKET */
-
 	if(arc_type == ARCHIVE_DIR)
 	{
 	    URL url;

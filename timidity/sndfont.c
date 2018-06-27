@@ -1924,12 +1924,6 @@ extern struct URL_module URL_module_file;
 #ifndef __MACOS__
 extern struct URL_module URL_module_dir;
 #endif /* __MACOS__ */
-#ifdef SUPPORT_SOCKET
-extern struct URL_module URL_module_http;
-extern struct URL_module URL_module_ftp;
-extern struct URL_module URL_module_news;
-extern struct URL_module URL_module_newsgroup;
-#endif /* SUPPORT_SOCKET */
 #ifdef HAVE_POPEN
 extern struct URL_module URL_module_pipe;
 #endif /* HAVE_POPEN */
@@ -1939,12 +1933,6 @@ static struct URL_module *url_module_list[] =
 #ifndef __MACOS__
     &URL_module_dir,
 #endif /* __MACOS__ */
-#ifdef SUPPORT_SOCKET
-    &URL_module_http,
-    &URL_module_ftp,
-    &URL_module_news,
-    &URL_module_newsgroup,
-#endif /* SUPPORT_SOCKET */
 #if !defined(__MACOS__) && defined(HAVE_POPEN)
     &URL_module_pipe,
 #endif
@@ -2106,14 +2094,6 @@ int main(int argc, char **argv)
 	memset(x_playnote, -1, sizeof x_playnote);
 	#endif
 	ctl->verbosity = -1;
-#ifdef SUPPORT_SOCKET
-	/*init_mail_addr();*/
-	if(url_user_agent == NULL){
-	    url_user_agent = (char *)safe_malloc(10 + strlen(timidity_version));
-	    strcpy(url_user_agent, "TiMidity-");
-	    strcat(url_user_agent, timidity_version);
-	}
-#endif /* SUPPORT_SOCKET */
 	for(i = 0; url_module_list[i]; i++)
 	    url_add_module(url_module_list[i]);
 	init_freq_table();

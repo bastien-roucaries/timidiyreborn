@@ -53,20 +53,6 @@ libarc_a_SOURCES = \
 	url_uudecode.c \
 	zip.h
 
-EXTRA_libarc_a_SOURCES = \
-	url_http.c \
-	url_ftp.c \
-	url_news.c \
-	url_newsgroup.c
-
-if ENABLE_NETWORK
-NET_OBJS = \
-	url_http.$(OBJEXT) \
-	url_ftp.$(OBJEXT) \
-	url_news.$(OBJEXT) \
-	url_newsgroup.$(OBJEXT)
-endif
-
 libarc_a_LIBADD = $(NET_OBJS)
 
 libarc.a: $(libarc_a_OBJECTS) $(libarc_a_DEPENDENCIES)
