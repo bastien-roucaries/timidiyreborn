@@ -864,8 +864,6 @@ dnl darwin(d):  Mac OS X pcm device
 dnl alsa(s):    ALSA pcm device
 dnl alib(A):    HPUX network audio (Alib)
 dnl nas(n):     Network Audio System
-dnl arts(R):	aRts
-dnl esd(e):     EsounD
 dnl portaudio(p) PortAudio
 dnl npipe(N)   Windows named pipe;
 dnl vorbis(v):  Ogg Vorbis
@@ -875,7 +873,7 @@ dnl gogo(g):    MP3 GOGO
 dnl jack(j):    JACK
 dnl ao(O):      Libao
 
-audio_targets='default oss alsa sun hpux irix sb_dsp w32 alib nas esd vorbis flac gogo portaudio npipe jack ao'
+audio_targets='default oss alsa sun hpux irix sb_dsp w32 alib nas vorbis flac gogo portaudio npipe jack ao'
 
 AC_ARG_WITH(nas-library,
   AS_HELP_STRING([--with-nas-library=library], [NAS absolute library path(Don't use -laudio)]))
@@ -896,8 +894,6 @@ AC_ARG_ENABLE(audio,
                               alsa:      ALSA pcm device
                               alib:      HPUX network audio (Alib)
                               nas:       NAS - Network Audio System
-                              arts:      aRts
-                              esd:       EsounD - Enlightened Sound Daemon
                               portaudio: PortAudio
                               npipe:     Named Pipe(windows)
                               jack:      JACK
@@ -926,8 +922,8 @@ DEFAULT_PLAYMODE=
 AC_ARG_WITH(default-output,
   AS_HELP_STRING([--with-default-output=<mode>],
   [Specify default output mode (optional):
-                                (default|alsa|alib|arts|nas|
-                                esd|wav|au|aiff|list|vorbis|flac|speex|
+                                (default|alsa|alib|nas|
+                                wav|au|aiff|list|vorbis|flac|speex|
                                 gogo|portaudio|npipe|jack|ao)]),
   [ if test "$enable_audio" != no; then
     DEFAULT_PLAYMODE=$withval
@@ -937,9 +933,6 @@ AC_ARG_WITH(default-output,
   fi])
 
 dnl compatibility matters.
-dnl AC_ARG_ENABLE(esd,
-dnl   [  --enable-esd         EsounD (Obsoleted.  Use --enable-audio=esd)],
-dnl   [ au_enable_esd=$enableval ])
 dnl AC_ARG_ENABLE(nas,
 dnl   [  --enable-nas         NAS  (Obsoleted.  Use --enable-audio=nas)],
 dnl   [ au_enable_nas=$enableval ])
@@ -1231,70 +1224,6 @@ else
   AC_MSG_RESULT(no)
 fi
 
-dnl aRts of KDE
-AC_MSG_CHECKING(enable_audio=arts)
-if test "x$au_enable_arts" = xyes; then
-  AC_MSG_RESULT([yes, configuring aRts])
-  dnl **** Check for aRts Sound Server ****
-  AC_PATH_PROG(ARTSCCONFIG, artsc-config)
-  if test x$ARTSCCONFIG != x -a x$ARTSCCONFIG != x'"$ARTSCCONFIG"';
-  then
-    ARTSC_CFLAGS=""
-    for i in `$ARTSCCONFIG --cflags`
-    do
-      case "$i" in
-        -I*) ARTSC_CFLAGS="$ARTSC_CFLAGS $i";;
-      esac
-    done
-    ARTSC_LIBS=`$ARTSCCONFIG --libs`
-    save_CFLAGS="$CFLAGS"
-    CFLAGS="$CFLAGS $ARTSC_CFLAGS"
-    AC_TRY_COMPILE([#include <artsc.h>],[arts_stream_t stream;],
-        [AC_SUBST(ARTSLIBS, $ARTSC_LIBS)
-         AC_SUBST(ARTSINCL, $ARTSC_CFLAGS)
-         AC_DEFINE(HAVE_ARTS, 1, [Define if you have ARTS sound server])
-	 have_arts="yes"
-         ])
-    CFLAGS="$save_CFLAGS"
-  fi
-
-  if test "$have_arts" = "yes"; then
-    dnl AC_MSG_RESULT(aRts: Enabled)
-    EXTRADEFS="$EXTRADEFS -DAU_ARTS"
-    SYSEXTRAS="$SYSEXTRAS aRts_a.c"
-    EXTRACT_CPPFLAGS(CPPFLAGS,CFLAGS,$ARTSC_CFLAGS)
-    LIBS="$LIBS $ARTSC_LIBS"
-  else
-    AC_MSG_WARN(aRts: Couldn't configure)
-  fi
-else
-  AC_MSG_RESULT(no)
-fi
-
-dnl EsounD
-AC_MSG_CHECKING(enable_audio=esd)
-if test "x$au_enable_esd" = xyes; then
-  AC_MSG_RESULT([yes, configuring esd])
-  KEEPCFLAGS=$CFLAGS
-  KEEPLIBS=$LIBS
-  KEEPLDFLAGS=$LDFLAGS
-  AM_PATH_ESD()
-  CFLAGS=$KEEPCFLAGS
-  LIBS=$KEEPLIBS
-  LDFLAGS=$KEEPLDFLAGS
-  if test "x$no_esd" = x; then
-    dnl AC_MSG_RESULT(EsounD: Enabled)
-    EXTRADEFS="$EXTRADEFS -DAU_ESD"
-    SYSEXTRAS="$SYSEXTRAS esd_a.c"
-    EXTRACT_CPPFLAGS(CPPFLAGS,CFLAGS,$ESD_CFLAGS)
-    LIBS="$LIBS $ESD_LIBS"
-  else
-    AC_MSG_WARN(EsounD: Couldn't configure)
-  fi
-else
-  AC_MSG_RESULT(no)
-fi
-
 dnl portaudio
 AC_MSG_CHECKING(enable_audio=portaudio)
 if test "x$au_enable_portaudio" = xyes; then
@@ -1492,8 +1421,6 @@ case ".$DEFAULT_PLAYMODE" in
   .w32)      TIMIDITY_OUTPUT_ID=d ;;
   .alib)     TIMIDITY_OUTPUT_ID=A ;;
   .nas)      TIMIDITY_OUTPUT_ID=n ;;
-  .arts)     TIMIDITY_OUTPUT_ID=R ;;
-  .esd)      TIMIDITY_OUTPUT_ID=e ;;
   .portaudio)      TIMIDITY_OUTPUT_ID=p ;;  
   .npipe)    TIMIDITY_OUTPUT_ID=N ;;
   .wav)      TIMIDITY_OUTPUT_ID=w ;;

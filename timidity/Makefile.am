@@ -122,7 +122,6 @@ EXTRA_timidity_SOURCES = \
 	dl_dyld.c \
 	dl_hpux.c \
 	bsd20_a.c \
-	esd_a.c \
 	hpux_a.c \
 	hpux_d_a.c \
 	jack_a.c \

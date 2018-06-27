@@ -82,14 +82,6 @@ extern PlayMode alsa_play_mode;
 extern PlayMode hpux_nplay_mode;
 #endif /* AU_HPUX_ALIB */
 
-#ifdef AU_ARTS
-extern PlayMode arts_play_mode;
-#endif /* AU_ARTS */
-
-#ifdef AU_ESD
-extern PlayMode esd_play_mode;
-#endif /* AU_ESD */
-
 #ifdef AU_PORTAUDIO
 #ifndef AU_PORTAUDIO_DLL
 extern PlayMode portaudio_play_mode;
