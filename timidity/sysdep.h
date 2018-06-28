@@ -312,10 +312,6 @@ int usleep(unsigned int useconds); /* shut gcc warning up */
 #endif /* sun */
 
 
-#ifdef __W32__
-#define URL_DIR_CACHE_DISABLE
-#endif
-
 /* The path separator (D.M.) */
 /* Windows: "\"
  * Cygwin:  both "\" and "/"

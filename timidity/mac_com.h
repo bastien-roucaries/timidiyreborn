@@ -27,7 +27,6 @@
 #define	MAC_COM_H
 
 #define SUPPORT_SOUNDSPEC
-#define URL_DIR_CACHE_DISABLE
 
 #undef  DEFAULT_RATE
 #define DEFAULT_RATE	22050
