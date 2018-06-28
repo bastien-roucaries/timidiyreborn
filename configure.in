@@ -36,7 +36,7 @@ dnl		- add to -L LDFLAGS
 dnl C_INCLUDE_PATH
 dnl		- add to -I CPPFLAGS
 dnl MSYS	- `yes' if cygnus or Mingw windows environment.
-dnl WISH	- wish
+dnl TCLSH	- tclsh
 dnl LN_S	- ln -s
 dnl tcltk_dep	- make dependencies for tcl/tk interface
 dnl
@@ -59,7 +59,7 @@ AC_CONFIG_HEADERS([config.h interface.h])
 AM_MAINTAINER_MODE
 
 SHELL=${CONFIG_SHELL-"/bin/sh"}
-WISH=${WISH-"wish"}
+TCLSH=${TCLSH-"tclsh"}
 
 dnl to use contains() macro (see autoconf/acinclude.m4)
 CONTAINS_INIT
@@ -156,7 +156,7 @@ tmplibdir="`eval \"echo ${pkglibdir}\"`"
 AC_DEFINE_UNQUOTED(PKGLIBDIR,"$tmplibdir",place to install modules)
 
 AC_ARG_WITH(xaw-resource-prefix,
-  AS_HELP_STRING([--with-xaw-resource-prefix=DIR], [What prefix to install XAW's resource files to (optinal)]),
+  AS_HELP_STRING([--with-xaw-resource-prefix=DIR], [What prefix to install X resource files to (optional, used by Xaw/Motif interfaces)]),
   [xawresdir=$withval], [])
 AM_CONDITIONAL(XAW_INSTALL_RESOURCE_FILES, test "x$xawresdir" != "x")
 AC_SUBST(xawresdir)
@@ -344,7 +344,7 @@ AC_PATH_XTRA
 
 dnl Xft for trace window
 AC_ARG_ENABLE(xft,
-  AS_HELP_STRING([--enable-xft], [Enable use of Xft ]))
+  AS_HELP_STRING([--enable-xft], [Enable use of Xft in X trace mode]))
 
 AC_ARG_WITH(xawlib,
   [  --with-xawlib=lib     Try to link to these xaw widget libraries by the
@@ -520,6 +520,22 @@ fi
 if test "x$POCC" != xyes ; then
 AC_TYPE_OFF_T
 AC_TYPE_PID_T
+fi
+
+# Older versions of MinGW do not define ssize_t in sys/types
+AC_MSG_CHECKING([for ssize_t])
+AC_CACHE_VAL(ac_cv_type_$1,
+[AC_EGREP_CPP([ssize_t@<:@^a-zA-Z_0-9@:>@],
+[#include <sys/types.h>
+#if STDC_HEADERS
+#include <stdlib.h>
+#include <stddef.h>
+#endif], [ac_cv_type_ssize_t=yes], [ac_cv_type_ssize_t=no])])
+
+AC_MSG_RESULT([$ac_cv_type_ssize_t])
+if test $ac_cv_type_ssize_t = yes; then
+  AC_DEFINE(HAVE_SSIZE_T, 1,
+    [Define to 1 if the system has the type `ssize_t'.])
 fi
 
 dnl keyword "volatile" check
@@ -1675,12 +1691,18 @@ dnl configure must check ncurses header with -I/usr/include/ncurses option.
           [ lib_curses_opt=-lcurses
 	    AC_DEFINE(USE_PDCURSES,1,Define to 1 if you use PDcurses)
 	    lib_user32_opt="$lib_user32_test"
+	    AC_CHECK_LIB(curses, vwprintw,
+	      AC_DEFINE(HAVE_VWPRINTW, 1,
+	        [Define to 1 if you have the `vwprintw' function.]))
 	  ],
 	  [ dnl checking libpdcurses
 	    AC_CHECK_LIB(pdcurses,PDC_set_ctrl_break,
 	    [ lib_curses_opt=-lpdcurses
 	      AC_DEFINE(USE_PDCURSES,1,Define to 1 if you use PDcurses)
 	      lib_user32_opt="$lib_user32_test"
+	      AC_CHECK_LIB(pdcurses, vwprintw,
+	        AC_DEFINE(HAVE_VWPRINTW, 1,
+	          [Define to 1 if you have the `vwprintw' function.]))
 	    ],
 	    [ dnl OpenBSD use -lcurses instead of -lncurses.
 	      case "$target" in
@@ -1693,6 +1715,9 @@ dnl configure must check ncurses header with -I/usr/include/ncurses option.
 		  if test "x$VCPP" = xyes || test "x$BORLANDC" = xyes || test "x$WATCOM_C" = xyes || test "x$DMC" = xyes || test "x$POCC" = xyes; then
 		    lib_curses_opt=libpdcurses.lib
 		    AC_DEFINE(USE_PDCURSES,1,Define to 1 if you use PDcurses)
+		    AC_CHECK_LIB(pdcurses, vwprintw,
+		      AC_DEFINE(HAVE_VWPRINTW, 1,
+		        [Define to 1 if you have the `vwprintw' function.]))
 		  else
 		    AC_MSG_WARN(ncurses interface is not enabled)
 		    enable_ncurses=no
@@ -2287,7 +2312,7 @@ AC_SUBST(SHCFLAGS)
 AC_SUBST(dynamic_targets)
 AC_SUBST(so)
 AC_SUBST(LN_S)
-AC_SUBST(WISH)
+AC_SUBST(TCLSH)
 AC_SUBST(tcltk_dep)
 AC_SUBST(program_transform_name)
 AC_SUBST(INTERFACE_SRCS)

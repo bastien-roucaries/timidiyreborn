@@ -46,8 +46,6 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <sys/sem.h>
-#include <tcl.h>
-#include <tk.h>
 #include <sys/wait.h>
 
 #include "timidity.h"
@@ -60,10 +58,16 @@
 #include "miditrace.h"
 #include "aq.h"
 
+#include <tcl.h>
+#include <tk.h>
+
 #ifndef TKPROGPATH
 #define TKPROGPATH PKGLIBDIR "/tkmidity.tcl"
 #endif /* TKPROGPATH */
 
+#if (TCL_MAJOR_VERSION < 8)
+#define Tcl_GetStringResult(interp) (interp->result)
+#endif
 
 static void ctl_refresh(void);
 static void ctl_total_time(int tt);
@@ -116,7 +120,7 @@ static void shm_free(int sig);
 
 static void start_panel(void);
 
-#define MAX_TK_MIDI_CHANNELS	16
+#define MAX_TK_MIDI_CHANNELS	32
 
 typedef struct {
 	int reset_panel;
@@ -153,6 +157,9 @@ ControlMode ctl=
     cmsg,
     ctl_event
 };
+
+static uint32 cuepoint = 0;
+static int cuepoint_pending = 0;
 
 #define FLAG_NOTE_OFF	1
 #define FLAG_NOTE_ON	2
@@ -576,6 +583,12 @@ static int ctl_read(int32 *valp)
 {
 	int num;
 
+	if (cuepoint_pending) {
+		*valp = cuepoint;
+		cuepoint_pending = 0;
+		return RC_FORWARD;
+	}
+
 	/* We don't wan't to lock on reading  */
 	num=k_pipe_read_ready();
 
@@ -871,6 +884,21 @@ static Tcl_Interp *my_interp;
 
 static int AppInit(Tcl_Interp *interp)
 {
+#include "bitmaps/back.xbm"
+#include "bitmaps/fwrd.xbm"
+#include "bitmaps/next.xbm"
+#include "bitmaps/pause.xbm"
+#include "bitmaps/play.xbm"
+#include "bitmaps/prev.xbm"
+#include "bitmaps/quit.xbm"
+#include "bitmaps/stop.xbm"
+#include "bitmaps/timidity.xbm"
+
+#define DefineBitmap(Bitmap) do { \
+	Tk_DefineBitmap (interp, Tk_GetUid(#Bitmap), Bitmap##_bits, \
+			 Bitmap##_width, Bitmap##_height); \
+	} while(0)
+
 	my_interp = interp;
 
 	if (Tcl_Init(interp) == TCL_ERROR) {
@@ -890,7 +918,19 @@ static int AppInit(Tcl_Interp *interp)
 			  (ClientData)NULL, (Tcl_CmdDeleteProc*)NULL);
 	Tcl_CreateCommand(interp, "TraceUpdate", (Tcl_CmdProc*) TraceUpdate,
 			  (ClientData)NULL, (Tcl_CmdDeleteProc*)NULL);
+
+	DefineBitmap(back);
+	DefineBitmap(fwrd);
+	DefineBitmap(next);
+	DefineBitmap(pause);
+	DefineBitmap(play);
+	DefineBitmap(prev);
+	DefineBitmap(quit);
+	DefineBitmap(stop);
+	DefineBitmap(timidity);
+
 	return TCL_OK;
+#undef DefineBitmap
 }
 
 /*ARGSUSED*/
@@ -905,7 +945,7 @@ static int ExitAll(ClientData clientData, Tcl_Interp *interp,
 }
 
 /* evaluate Tcl script */
-static char *v_eval(char *fmt, ...)
+static const char *v_eval(char *fmt, ...)
 {
 	char buf[256];
 	va_list ap;
@@ -913,7 +953,7 @@ static char *v_eval(char *fmt, ...)
 	vsnprintf(buf, sizeof(buf), fmt, ap);
 	Tcl_Eval(my_interp, buf);
 	va_end(ap);
-	return my_interp->result;
+	return Tcl_GetStringResult(my_interp);
 }
 
 static const char *v_get2(const char *v1, const char *v2)
@@ -1144,6 +1184,10 @@ static void ctl_event(CtlEvent *e)
 	break;
       case CTLE_PLAY_END:
 	break;
+	case CTLE_CUEPOINT:
+		cuepoint = e->v1;
+		cuepoint_pending = 1;
+		break;
       case CTLE_TEMPO:
 	break;
       case CTLE_METRONOME:

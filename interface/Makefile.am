@@ -240,8 +240,7 @@ EXTRA_DIST = \
 	tkpanel.tcl \
 	browser.tcl \
 	misc.tcl \
-	timidity.pel \
-	tclIndex
+	timidity.pel
 
 .ptcl.tcl:
 	sed -e 's@%TCL_DIR%@$(TCL_DIR)@g' $< > $@
@@ -249,6 +248,8 @@ EXTRA_DIST = \
 	sed -e 's@%BIN_DIR%@$(bindir)@g' $< > $@
 clean:
 	rm -f tkmidity.tcl
+	rm -f tclIndex
+	rm -f timidity.el
 	rm -f *.$(OBJEXT)
 	rm -f *.$(so)
 	rm -f *.res
@@ -259,7 +260,7 @@ clean:
 
 tclIndex: $(TCLSRCS)
 	rm -f tclIndex
-	echo 'auto_mkindex . *.tcl; exit' | $(WISH)
+	echo 'auto_mkindex $(srcdir) *.tcl; exit' | $(TCLSH)
 
 if ENABLE_TCLTK
 install_tk = install.tk
@@ -275,7 +276,7 @@ if ENABLE_DYNAMIC_XAW
 install_xaw = install.xaw
 endif
 
-install.tk: $(ALLTCLF) install.bitmaps
+install.tk: $(ALLTCLF)
 	test -d $(DESTDIR)$(TCL_DIR) || mkdir -p $(DESTDIR)$(TCL_DIR)
 	for f in $(ALLTCLF) ''; do case ".$$f" in .);; *) $(INSTALL_DATA) $$f $(DESTDIR)$(TCL_DIR);; esac; done
 
@@ -329,15 +330,15 @@ w32g_res.res: w32g_res.h w32g_rec.h w32g_res.rc \
 	rm w32g_res_bc.rc
 else
 w32g_syn_escaped.c:w32g_syn.c escape_sjis.pl
-	escape_sjis.pl < w32g_syn.c > w32g_syn_escaped.c
+	./escape_sjis.pl < w32g_syn.c > w32g_syn_escaped.c
 
 w32g_subwin_escaped.c:w32g_subwin.c escape_sjis.pl
-	escape_sjis.pl < w32g_subwin.c > w32g_subwin_escaped.c
+	./escape_sjis.pl < w32g_subwin.c > w32g_subwin_escaped.c
 
 w32g_res.res: w32g_res.h w32g_rec.h w32g_res.rc \
 	w32g_btn.bmp w32g_icon.ico w32g_sleep.bmp w32g_subbtn.bmp \
 	escape_sjis.pl
-	escape_sjis.pl <w32g_res.rc >w32g_res_escaped.rc
+	./escape_sjis.pl <w32g_res.rc >w32g_res_escaped.rc
 	windres -o $@ -O coff w32g_res.rc 2>&1|grep escape - >/dev/null && \
 	windres -o $@ -O coff w32g_res_escaped.rc || echo
 	rm w32g_res_escaped.rc

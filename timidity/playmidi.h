@@ -121,6 +121,7 @@ enum midi_event_t
 	ME_MASTER_VOLUME,
 	ME_RESET,				/* Reset and change system mode */
 	ME_NOTE_STEP,
+	ME_CUEPOINT,			/* skip to time segment */
 	
 	ME_TIMESIG,				/* Time signature */
 	ME_KEYSIG,				/* Key signature */
@@ -585,7 +586,7 @@ extern int check_apply_control(void);
 extern void recompute_freq(int v);
 extern int midi_drumpart_change(int ch, int isdrum);
 extern void ctl_note_event(int noteID);
-extern void ctl_mode_event(int type, int trace, long arg1, long arg2);
+extern void ctl_mode_event(int type, int trace, ptr_size_t arg1, ptr_size_t arg2);
 extern char *channel_instrum_name(int ch);
 extern int get_reverb_level(int ch);
 extern int get_chorus_level(int ch);
