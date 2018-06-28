@@ -456,9 +456,6 @@ static Instrument *try_load_soundfont(SFInsts *rec, int order, int bank,
 			end_soundfont(rec);
 			return NULL;
 		}
-		if (! opt_sf_close_each_file)
-			if (! IS_URL_SEEK_SAFE(rec->tf->url))
-				rec->tf->url = url_cache_open(rec->tf->url, 1);
 	}
 
 	addr = INSTHASH(bank, preset, keynote);

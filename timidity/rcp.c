@@ -313,10 +313,6 @@ int read_rcp_file(struct timidity_file *tf, char *magic0, char *fn)
     current_file_info->format = 1;
     current_file_info->tracks = ntrack;
 
-    if(!IS_URL_SEEK_SAFE(tf->url))
-	if((tf->url = url_cache_open(tf->url, 1)) == NULL)
-	    return 1;
-
     for(i = 0; i < ntrack; i++)
 	if(read_rcp_track(tf, i, gfmt))
 	{

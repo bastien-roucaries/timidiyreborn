@@ -164,9 +164,9 @@ extern URL url_pipe_open(char *command);
 /* No URL_module */
 extern URL url_mem_open(char *memory, long memsiz, int autofree);
 extern URL url_buff_open(URL url, int autoclose);
-extern URL url_cache_open(URL url, int autoclose);
-extern void url_cache_detach(URL url);
-extern void url_cache_disable(URL url);
+//extern URL url_cache_open(URL url, int autoclose);
+//extern void url_cache_detach(URL url);
+//extern void url_cache_disable(URL url);
 
 extern char *url_dir_name(URL url);
 
@@ -181,20 +181,12 @@ enum url_types
     URL_pipe_t,			/* Pipe */
     URL_mem_t,			/* On memory */
     URL_buff_t,			/* Buffered stream */
-    URL_cache_t,		/* Cached stream */
     URL_arc_t,			/* arc stream */
 
 
     URL_extension_t = 100	/* extentional stream >= 100 */
 };
 
-enum url_news_conn_type
-{
-    URL_NEWS_CONN_NO_CACHE,
-    URL_NEWS_CONN_CACHE,
-    URL_NEWS_CLOSE_CACHE,
-    URL_NEWS_GET_FLAG
-};
 
 #define IS_URL_SEEK_SAFE(url) ((url)->url_seek != NULL && \
 			       (url)->type != URL_buff_t)

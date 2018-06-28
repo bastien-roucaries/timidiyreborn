@@ -4735,8 +4735,6 @@ MidiEvent *read_midi_file(struct timidity_file *tf, int32 *count, int32 *sp,
     if((mtype = get_module_type(fn)) > 0)
     {
 	readmidi_read_init();
-	if(!IS_URL_SEEK_SAFE(tf->url))
-	    tf->url = url_cache_open(tf->url, 1);
 	err = load_module_file(tf, mtype);
 	if(!err)
 	{
@@ -4749,7 +4747,6 @@ MidiEvent *read_midi_file(struct timidity_file *tf, int32 *count, int32 *sp,
 	if(err == 2)
 	    return NULL;
 	url_rewind(tf->url);
-	url_cache_disable(tf->url);
     }
 
 #if MAX_CHANNELS > 16
