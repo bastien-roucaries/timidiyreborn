@@ -50,46 +50,6 @@
 #  endif /* DEFAULT_PATH */
 #endif /* CONFIG_FILE */
 
-
-/* Filename extension, followed by command to run decompressor so that
-   output is written to stdout. Terminate the list with a 0.
-
-   Any file with a name ending in one of these strings will be run
-   through the corresponding decompressor. If you don't like this
-   behavior, you can undefine DECOMPRESSOR_LIST to disable automatic
-   decompression entirely. */
-
-#define DECOMPRESSOR_LIST { \
-			      ".gz",  "gunzip -c %s", \
-			      ".xz",  "xzcat %s", \
-			      ".lzma", "lzcat %s", \
-			      ".bz2", "bunzip2 -c %s", \
-			      ".Z",   "zcat %s", \
-			      ".zip", "unzip -p %s", \
-			      ".lha", "lha -pq %s", \
-			      ".lzh", "lha -pq %s", \
-			      ".shn", "shorten -x %s -", \
-			     0 }
-
-
-/* Define GUS/patch converter. */
-#define PATCH_CONVERTERS { \
-			     ".wav", "wav2pat %s", \
-			     0 }
-
-/* When a patch file can't be opened, one of these extensions is
-   appended to the filename and the open is tried again.
-
-   This is ignored for Windows, which uses only ".pat" (see the bottom
-   of this file if you need to change this.) */
-#define PATCH_EXT_LIST { \
-			   ".pat", \
-			   ".shn", ".pat.shn", \
-			   ".gz", ".pat.gz", \
-			   ".bz2", ".pat.bz2", \
-			   0 }
-
-
 /* Acoustic Grand Piano seems to be the usual default instrument. */
 #define DEFAULT_PROGRAM 0
 

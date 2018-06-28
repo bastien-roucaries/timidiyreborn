@@ -313,9 +313,6 @@ int usleep(unsigned int useconds); /* shut gcc warning up */
 
 
 #ifdef __W32__
-#undef PATCH_EXT_LIST
-#define PATCH_EXT_LIST { ".pat", 0 }
-
 #define URL_DIR_CACHE_DISABLE
 #endif
 
@@ -411,11 +408,6 @@ int usleep(unsigned int useconds); /* shut gcc warning up */
 
 #ifdef __MACOS__
 #include "mac_com.h"
-#endif
-
-#ifndef HAVE_POPEN
-# undef DECOMPRESSOR_LIST
-# undef PATCH_CONVERTERS
 #endif
 
 #endif /* SYSDEP_H_INCUDED */

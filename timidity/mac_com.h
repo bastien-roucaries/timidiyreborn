@@ -27,8 +27,6 @@
 #define	MAC_COM_H
 
 #define SUPPORT_SOUNDSPEC
-#undef  PATCH_EXT_LIST
-#define PATCH_EXT_LIST { ".pat", 0 }
 #define URL_DIR_CACHE_DISABLE
 
 #undef  DEFAULT_RATE
