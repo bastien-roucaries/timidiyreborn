@@ -208,11 +208,6 @@ ArchiveEntryNode *next_mime_entry(void)
 
 	/* find data type */
 	comptype = -1;
-	if(encoding != NULL)
-	{
-	    if(strcmp("quoted-printable", encoding) == 0)
-		comptype = ARCHIVEC_QS;
-	}
 
 	if(comptype == -1)
 	{
@@ -583,9 +578,6 @@ static void *arc_mime_decode(void *data, long size,
 
   switch(comptype)
     {
-    case ARCHIVEC_QS:		/* quoted string encoded */
-      url = url_qsdecode_open(url, 1);
-      break;
     default:
       url_close(url);
       return NULL;

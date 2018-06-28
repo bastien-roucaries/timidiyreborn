@@ -121,8 +121,6 @@ enum
     ARCHIVEC_LZHED_LH6,		/* -lh6- */
     ARCHIVEC_LZHED_LH7,		/* -lh7- */
 
-    /* Encode for MIME */
-    ARCHIVEC_QS,		/* quoted string encoded */
 };
 
 /* archive_type */

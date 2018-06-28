@@ -842,10 +842,6 @@ static long url_arc_read(URL url, void *vp, long bufsiz)
       case ARCHIVEC_LZHED_LH7:	/* -lh7- */
 	n = unlzh((UNLZHHandler)decoder, buff, bufsiz);
 	break;
-
-      case ARCHIVEC_QS:		/* quoted string encoded */
-	n = url_read((URL)decoder, buff, bufsiz);
-	break;
     }
 
     if(n > 0)
@@ -896,10 +892,6 @@ static void url_arc_close(URL url)
 	  case ARCHIVEC_LZHED_LH6: /* -lh6- */
 	  case ARCHIVEC_LZHED_LH7: /* -lh7- */
 	    close_unlzh_handler((UNLZHHandler)decoder);
-	    break;
-
-	  case ARCHIVEC_QS:	/* quoted string encoded */
-	    url_close((URL)decoder);
 	    break;
 	}
     }
