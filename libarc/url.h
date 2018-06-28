@@ -202,19 +202,10 @@ enum url_types
     URL_none_t,			/* Undefined URL */
     URL_file_t,			/* File system */
     URL_dir_t,			/* Directory entry */
-    URL_http_t,			/* HTTP */
-    URL_ftp_t,			/* FTP */
-    URL_news_t,			/* NetNews article */
-    URL_newsgroup_t,		/* NetNews group */
     URL_pipe_t,			/* Pipe */
     URL_mem_t,			/* On memory */
     URL_buff_t,			/* Buffered stream */
     URL_cache_t,		/* Cached stream */
-    URL_uudecode_t,		/* UU decoder */
-    URL_b64decode_t,		/* Base64 decoder */
-    URL_qsdecode_t,		/* Quoted-string decoder */
-    URL_cgi_escape_t,		/* WWW CGI Escape */
-    URL_cgi_unescape_t,		/* WWW CGI Unescape */
     URL_arc_t,			/* arc stream */
 
     URL_inflate_t = 99,		/* LZ77 decode stream */
