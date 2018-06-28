@@ -5006,61 +5006,6 @@ struct timidity_file *open_midi_file(char *fn,
     return tf;
 }
 
-#ifndef NO_MIDI_CACHE
-static long deflate_url_reader(char *buf, long size, void *user_val)
-{
-    return url_nread((URL)user_val, buf, size);
-}
-
-/*
- * URL data into deflated buffer.
- */
-static void url_make_file_data(URL url, struct midi_file_info *infop)
-{
-    char buff[BUFSIZ];
-    MemBuffer b;
-    long n;
-    DeflateHandler compressor;
-
-    init_memb(&b);
-
-    /* url => b */
-    if((compressor = open_deflate_handler(deflate_url_reader, url,
-					  ARC_DEFLATE_LEVEL)) == NULL)
-	return;
-    while((n = zip_deflate(compressor, buff, sizeof(buff))) > 0)
-	push_memb(&b, buff, n);
-    close_deflate_handler(compressor);
-    infop->compressed = 1;
-
-    /* b => mem */
-    infop->midi_data_size = b.total_size;
-    rewind_memb(&b);
-    infop->midi_data = (void *)safe_malloc(infop->midi_data_size);
-    read_memb(&b, infop->midi_data, infop->midi_data_size);
-    delete_memb(&b);
-}
-
-static int check_need_cache(URL url, char *filename)
-{
-    int t1, t2;
-    t1 = url_check_type(filename);
-    t2 = url->type;
-    return (t1 == URL_http_t || t1 == URL_ftp_t || t1 == URL_news_t)
-	 && t2 != URL_arc_t;
-}
-#else
-/*ARGSUSED*/
-static void url_make_file_data(URL url, struct midi_file_info *infop)
-{
-}
-/*ARGSUSED*/
-static int check_need_cache(URL url, char *filename)
-{
-    return 0;
-}
-#endif /* NO_MIDI_CACHE */
-
 int check_midi_file(char *filename)
 {
     struct midi_file_info *p;
@@ -5068,7 +5013,6 @@ int check_midi_file(char *filename)
     char tmp[4];
     int32 len;
     int16 format;
-    int check_cache;
 
     if(filename == NULL)
     {
@@ -5091,19 +5035,6 @@ int check_midi_file(char *filename)
     tf = open_file(filename, 1, OF_SILENT);
     if(tf == NULL)
 	return -1;
-
-    check_cache = check_need_cache(tf->url, filename);
-    if(check_cache)
-    {
-	if(!IS_URL_SEEK_SAFE(tf->url))
-	{
-	    if((tf->url = url_cache_open(tf->url, 1)) == NULL)
-	    {
-		close_file(tf);
-		return -1;
-	    }
-	}
-    }
 
     /* Parse MIDI header */
     if(tf_read(tmp, 1, 4, tf) != 4)
@@ -5158,12 +5089,6 @@ int check_midi_file(char *filename)
     p->hdrsiz = (int16)tf_tell(tf);
 
   end_of_header:
-    if(check_cache)
-    {
-	url_rewind(tf->url);
-	url_cache_disable(tf->url);
-	url_make_file_data(tf->url, p);
-    }
     close_file(tf);
     return format;
 }
@@ -5202,7 +5127,7 @@ char *get_midi_title(char *filename)
     char tmp[4];
     int32 len;
     int16 format, tracks, trk;
-    int laststatus, check_cache;
+    int laststatus;
     int mtype;
 
     if(filename == NULL)
@@ -5226,18 +5151,6 @@ char *get_midi_title(char *filename)
 	return NULL;
 
     mtype = get_module_type(filename);
-    check_cache = check_need_cache(tf->url, filename);
-    if(check_cache || mtype > 0)
-    {
-	if(!IS_URL_SEEK_SAFE(tf->url))
-	{
-	    if((tf->url = url_cache_open(tf->url, 1)) == NULL)
-	    {
-		close_file(tf);
-		return NULL;
-	    }
-	}
-    }
 
     if(mtype > 0)
     {
@@ -5537,12 +5450,6 @@ char *get_midi_title(char *filename)
     }
 
   end_of_parse:
-    if(check_cache)
-    {
-	url_rewind(tf->url);
-	url_cache_disable(tf->url);
-	url_make_file_data(tf->url, p);
-    }
     close_file(tf);
     if(p->first_text == NULL)
 	p->first_text = safe_strdup("");
