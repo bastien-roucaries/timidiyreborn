@@ -46,6 +46,7 @@
 #endif /* HAVE_SYS_STAT_H */
 
 #include <fnmatch.h>
+#include <dirent.h>
 
 #include "xaw.h"
 #include "x_trace.h"
@@ -2315,13 +2316,14 @@ cmpstringp(const void *p1, const void *p2) {
 static int
 setDirList(ldPointer ld, char *curr_dir) {
 /* uses global ld when called from SetDirAction */
-  URL dirp;
+  struct dirent *e;
+  DIR *d;
   struct stat st;
   char filename[PATH_MAX];
   unsigned int d_num = 0, f_num = 0;
   Boolean toggle;
 
-  if ((dirp = url_dir_open(curr_dir)) != NULL) {
+  if ((d = opendir(curr_dir)) != NULL) {
     char *fullpath;
     MBlockList pool;
     StringTable strftab, strdtab;
@@ -2332,10 +2334,11 @@ setDirList(ldPointer ld, char *curr_dir) {
     XtVaGetValues(load_f, XtNstate,&toggle, NULL);
 
     init_string_table(&strftab); init_string_table(&strdtab);
-    while (url_gets(dirp, filename, sizeof(filename)) != NULL) {
+    while ((e=readdir(d)) != NULL) {
+      char * filename = e->d_name;
       fullpath = (char *)new_segment(&pool, strlen(curr_dir) + 
                                      strlen(filename) + 2);
-      sprintf(fullpath, "%s/%s", curr_dir, filename);
+      sprintf(fullpath, "%s/%s", curr_dir,filename);
       if (filename[0] == '.') {
         if (filename[1] == '\0') continue;
         if ((filename[1] == '.') && (filename[2] == '\0')) {
@@ -2345,13 +2348,14 @@ setDirList(ldPointer ld, char *curr_dir) {
       }
       if (stat(fullpath, &st) == -1) continue;
       if (S_ISDIR(st.st_mode)) {
-        strcat(filename, "/"); d_num++;
-        put_string_table(&strdtab, filename, strlen(filename));
+        sprintf(fullpath,"%s/",filename);; d_num++;
+        put_string_table(&strdtab, fullpath, strlen(fullpath));
       } else {
         f_num++;
         put_string_table(&strftab, filename, strlen(filename));
       }
     }
+    closedir(d);
     reuse_mblock(&pool);
 
     if (d_num > 0) {
@@ -2512,6 +2516,8 @@ redrawCaptionACT(Widget w, XEvent *e, String *v, Cardinal *n) {
 static void
 completeDirACT(Widget w, XEvent *e, String *v, Cardinal *n) {
   char *p, *p2, * basename, * dirname, * slash;
+  DIR *d;
+  struct dirent *de;
   Widget load_dialog_widget = XtParent(w);  /* XtParent = ld->ld_load_d */
 
   p = XawDialogGetValueString(load_dialog_widget);
@@ -2532,7 +2538,6 @@ completeDirACT(Widget w, XEvent *e, String *v, Cardinal *n) {
     int lenb, lend, match = 0;
     char filename[PATH_MAX], matchstr[PATH_MAX], *path = "/";
     char *fullpath;
-    URL dirp;
 
     lenb = slash - dirname;
     lend = strlen (basename);
@@ -2542,12 +2547,13 @@ completeDirACT(Widget w, XEvent *e, String *v, Cardinal *n) {
     }
     else path = dirname;
 
-    if ((dirp = url_dir_open(path)) != NULL) {
+    if ((d = opendir(path)) != NULL) {
       MBlockList pool;
       struct stat st;
       init_mblock(&pool);
 
-      while (url_gets(dirp, filename, sizeof(filename)) != NULL) {
+      while ((de=readdir(d)) != NULL) {
+	const char * filename = de->d_name;
         if (!strncmp(basename, filename, lenb)) {
 
           fullpath = (char *)new_segment(&pool,
@@ -2570,7 +2576,7 @@ completeDirACT(Widget w, XEvent *e, String *v, Cardinal *n) {
           }
         }
       }
-      url_close(dirp);
+      closedir(d);
       reuse_mblock(&pool);
 
       if (match) {

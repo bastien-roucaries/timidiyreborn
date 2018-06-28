@@ -85,6 +85,7 @@ extern void sleep(unsigned long);
 #include "aq.h"
 
 #include <fnmatch.h>
+#include <dirent.h>
 
 #ifdef USE_PDCURSES
 int PDC_set_ctrl_break(bool setting);
@@ -3807,6 +3808,8 @@ static int mini_buff_completion(MiniBuffer *b)
 {
     char *text, *dir, *file, *pr;
     URL url;
+    DIR * d;
+    struct dirent * e;
     char buff[BUFSIZ];
     int dirlen, prefix;
 
@@ -3880,9 +3883,9 @@ static int mini_buff_completion(MiniBuffer *b)
     }
 
     /* open directory */
-    url = url_dir_open(dir);
+    d = opendir(dir);
 
-    if(url == NULL) /* No completion */
+    if(d == NULL) /* No completion */
     {
 	reuse_mblock(&b->pool);
 	return 0;
@@ -3891,19 +3894,20 @@ static int mini_buff_completion(MiniBuffer *b)
     /* scan and match each files */
     prefix = -1;
     pr = NULL;
-    while(url_gets(url, buff, sizeof(buff)))
+    while((e=readdir(d)) != NULL)
     {
 	char *path;
 	MFnode *mfp;
 	int i;
+	const char * d_name = e->d_name;
 
-	if(!strcmp(buff, ".") || !strcmp(buff, "..") ||
-	   (*buff == '.' && *file != '.'))
+	if(!strcmp(d_name, ".") || !strcmp(d_name, "..") ||
+	   (*d_name == '.' && *file != '.'))
 	    continue;
 
 	/* check prefix */
 	for(i = 0; file[i]; i++)
-	    if(file[i] != buff[i])
+	    if(file[i] != d_name[i])
 		break;
 
 	if(file[i] == '\0') /* matched */

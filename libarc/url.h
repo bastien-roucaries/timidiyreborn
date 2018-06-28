@@ -155,7 +155,6 @@ extern void url_add_module(struct URL_module *m);
 extern void url_add_modules(struct URL_module *m, ...);
 
 extern URL url_file_open(char *filename);
-extern URL url_dir_open(char *directory_name);
 
 /* No URL_module */
 extern URL url_mem_open(char *memory, long memsiz, int autofree);
@@ -164,7 +163,6 @@ extern URL url_buff_open(URL url, int autoclose);
 //extern void url_cache_detach(URL url);
 //extern void url_cache_disable(URL url);
 
-extern char *url_dir_name(URL url);
 
 extern char *url_lib_version;
 extern int url_newline_code;
@@ -173,7 +171,6 @@ enum url_types
 {
     URL_none_t,			/* Undefined URL */
     URL_file_t,			/* File system */
-    URL_dir_t,			/* Directory entry */
     URL_mem_t,			/* On memory */
     URL_buff_t,			/* Buffered stream */
 

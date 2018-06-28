@@ -67,6 +67,8 @@
 #include <ieeefp.h> /* For FP exceptions */
 #endif
 
+#include <dirent.h>
+
 #include "interface.h"
 #include "timidity.h"
 #include "tmdy_getopt.h"
@@ -543,16 +545,10 @@ extern StringTable wrd_read_opts;
 extern int SecondMode;
 
 extern struct URL_module URL_module_file;
-#ifndef __MACOS__
-extern struct URL_module URL_module_dir;
-#endif /* __MACOS__ */
 
 MAIN_INTERFACE struct URL_module *url_module_list[] =
 {
     &URL_module_file,
-#ifndef __MACOS__
-    &URL_module_dir,
-#endif /* __MACOS__ */
 #if defined(main) || defined(ANOTHER_MAIN)
     /* You can put some other modules */
     NULL,
@@ -4101,19 +4097,18 @@ static int parse_opt_h(const char *arg)
 #ifdef IA_DYNAMIC
 static inline void list_dyna_interface(FILE *fp, char *path, char *mark)
 {
-    URL dir;
-    char fname[NAME_MAX];
-    int cwd, dummy;
-	if ((dir = url_dir_open(path)) == NULL)
-		return;
-	cwd = open(".", 0);
-	if(chdir(path) != 0)
-		return;
-	while (url_gets(dir, fname, sizeof(fname)) != NULL)
-		if (strncmp(fname, "if_", 3) == 0) {
+    DIR * d;
+    struct dirent * e;
+    
+    d = opendir(path);
+    if(d == NULL) {
+	return;
+    }
+    while((e = readdir(d)) != NULL) {
+		if (strncmp(e->d_name, "if_", 3) == 0) {
 			void* handle = NULL;
 			char path[NAME_MAX];
-			snprintf(path, NAME_MAX, ".%c%s", PATH_SEP, fname);
+			snprintf(path, NAME_MAX, ".%c%s", PATH_SEP, e->d_name);
 			if((handle = dl_load_file(path))) {
 				ControlMode *(* loader)(void) = NULL;
 				char c;
@@ -4130,29 +4125,27 @@ static inline void list_dyna_interface(FILE *fp, char *path, char *mark)
 				dl_free(handle);
 			}
 		}
-	dummy = fchdir(cwd);
-	dummy += close(cwd);
-	url_close(dir);
+	}
+	closedir(d);
 }
 
 ControlMode *dynamic_interface_module(int id_char)
 {
-	URL url;
+	DIR *d;
+	struct dirent * e;
 	char fname[BUFSIZ];
 	ControlMode *ctl = NULL;
 	int cwd, dummy;
 	void *handle;
 	ControlMode *(* inferface_loader)(void);
 
-	if ((url = url_dir_open(dynamic_lib_root)) == NULL)
+	d = opendir(dynamic_lib_root);
+	if(d == NULL)
 		return NULL;
-	cwd = open(".", 0);
-	if(chdir(dynamic_lib_root) != 0)
-		return NULL;
-	while (url_gets(url, fname, sizeof(fname)) != NULL) {
-		if (strncmp(fname, "if_", 3) == 0) {
+	while ((e=readdir(d)) != NULL) {
+		if (strncmp(e->d_name, "if_", 3) == 0) {
 			char path[NAME_MAX], buff[20];
-			snprintf(path, NAME_MAX-1, ".%c%s", PATH_SEP, fname);
+			snprintf(path, NAME_MAX-1, ".%c%s", PATH_SEP, e->d_name);
 			if((handle = dl_load_file(path)) == NULL)
 				continue;
 			sprintf(buff, "interface_%c_loader", id_char);
@@ -4165,9 +4158,7 @@ ControlMode *dynamic_interface_module(int id_char)
 				break;
 		}
 	}
-	dummy = fchdir(cwd);
-	dummy += close(cwd);
-	url_close(url);
+	closedir(d);
 	return ctl;
 }
 #endif	/* IA_DYNAMIC */
