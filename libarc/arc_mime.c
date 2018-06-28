@@ -212,31 +212,6 @@ ArchiveEntryNode *next_mime_entry(void)
 	{
 	    if(strcmp("quoted-printable", encoding) == 0)
 		comptype = ARCHIVEC_QS;
-	    else if(strcmp("X-uuencode", encoding) == 0)
-	    {
-		char buff[BUFSIZ];
-		int i;
-
-		comptype = ARCHIVEC_UU;
-		url_seek(url, data_start, SEEK_SET);
-		url_set_readlimit(url, data_end - data_start);
-
-		/* find '^begin \d\d\d \S+' */
-		for(i = 0; i < MAX_CHECK_LINES; i++)
-		{
-		    if(whole_read_line(url, buff, sizeof(buff)) == -1)
-			break; /* ?? */
-		    if(strncmp(buff, "begin ", 6) == 0)
-		    {
-			data_start = url_tell(url);
-			p = strchr(buff + 6, ' ');
-			if(p != NULL)
-			    filename = strdup_mblock(&pool, p + 1);
-			break;
-		    }
-		}
-		url_set_readlimit(url, -1);
-	    }
 	}
 
 	if(comptype == -1)
@@ -251,16 +226,7 @@ ArchiveEntryNode *next_mime_entry(void)
 	    {
 		if(whole_read_line(url, buff, sizeof(buff)) == -1)
 		    break; /* ?? */
-		if(strncmp(buff, "begin ", 6) == 0)
-		{
-		    comptype = ARCHIVEC_UU;
-		    data_start = url_tell(url);
-		    p = strchr(buff + 6, ' ');
-		    if(p != NULL)
-			filename = strdup_mblock(&pool, p + 1);
-		    break;
-		}
-		else if((strncmp(buff, "(This file", 10) == 0) ||
+		if((strncmp(buff, "(This file", 10) == 0) ||
 			(strncmp(buff, "(Convert with", 13) == 0))
 		{
 		    int c;
@@ -617,9 +583,6 @@ static void *arc_mime_decode(void *data, long size,
 
   switch(comptype)
     {
-    case ARCHIVEC_UU:		/* uu encoded */
-      url = url_uudecode_open(url, 1);
-      break;
     case ARCHIVEC_QS:		/* quoted string encoded */
       url = url_qsdecode_open(url, 1);
       break;

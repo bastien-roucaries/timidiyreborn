@@ -843,7 +843,6 @@ static long url_arc_read(URL url, void *vp, long bufsiz)
 	n = unlzh((UNLZHHandler)decoder, buff, bufsiz);
 	break;
 
-      case ARCHIVEC_UU:		/* uu encoded */
       case ARCHIVEC_QS:		/* quoted string encoded */
 	n = url_read((URL)decoder, buff, bufsiz);
 	break;
@@ -899,7 +898,6 @@ static void url_arc_close(URL url)
 	    close_unlzh_handler((UNLZHHandler)decoder);
 	    break;
 
-	  case ARCHIVEC_UU:	/* uu encoded */
 	  case ARCHIVEC_QS:	/* quoted string encoded */
 	    url_close((URL)decoder);
 	    break;

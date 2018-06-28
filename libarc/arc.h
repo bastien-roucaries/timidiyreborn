@@ -122,7 +122,6 @@ enum
     ARCHIVEC_LZHED_LH7,		/* -lh7- */
 
     /* Encode for MIME */
-    ARCHIVEC_UU,		/* uu encoded */
     ARCHIVEC_QS,		/* quoted string encoded */
 };
 
