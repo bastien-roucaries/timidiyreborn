@@ -125,8 +125,6 @@ enum
 /* archive_type */
 enum
 {
-    ARCHIVE_TAR,
-    ARCHIVE_TGZ,
     ARCHIVE_ZIP,
     ARCHIVE_LZH,
     ARCHIVE_DIR,

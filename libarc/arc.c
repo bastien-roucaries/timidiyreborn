@@ -70,9 +70,6 @@ static struct
     int type;
 } archive_ext_list[] =
 {
-    {".tar",	ARCHIVE_TAR},
-    {".tar.gz",	ARCHIVE_TGZ},
-    {".tgz",	ARCHIVE_TGZ},
     {".zip",	ARCHIVE_ZIP},
     {".neo",	ARCHIVE_ZIP},
     {".lzh",	ARCHIVE_LZH},
@@ -246,21 +243,6 @@ ArchiveEntryNode *arc_parse_entry(URL url, int archive_type)
     orig = NULL;
     switch(archive_type)
     {
-      case ARCHIVE_TAR:
-	next_header_entry = next_tar_entry;
-	break;
-      case ARCHIVE_TGZ:
-	gzip_method = skip_gzip_header(url);
-	if(gzip_method != ARCHIVEC_DEFLATED)
-	{
-	    url_close(url);
-	    return NULL;
-	}
-	orig = url;
-	if((url = url_inflate_open(orig, -1, 0)) == NULL)
-	    return NULL;
-	next_header_entry = next_tar_entry;
-	break;
       case ARCHIVE_ZIP:
 	next_header_entry = next_zip_entry;
 	break;
@@ -300,8 +282,6 @@ static ArchiveFileList *add_arc_filelist(char *basename, int archive_type)
 
     switch(archive_type)
     {
-      case ARCHIVE_TAR:
-      case ARCHIVE_TGZ:
       case ARCHIVE_ZIP:
       case ARCHIVE_LZH:
 	break;
