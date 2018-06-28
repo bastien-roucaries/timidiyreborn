@@ -242,7 +242,6 @@ int is_url_prefix(const char *name)
     static char *url_proto_names[] =
     {
 	"file:",
-	"mime:",
 	NULL
     };
     for(i = 0; url_proto_names[i]; i++)

@@ -227,7 +227,7 @@
 
 (defun timidity-FILE (name)
   (setq timidity-current-filename name)
-  (let ((f (timidity-expand-file-name name)))
+  (let ((f (expand-file-name name)))
     (or (member f timidity-next-files)
 	(member f timidity-prev-files)
 	(setq timidity-prev-files (cons name timidity-prev-files)))))
@@ -370,7 +370,7 @@
       (progn
 	(setq timidity-playing-flag t)
 	(timidity-run)
-	(setq fname (timidity-expand-file-name fname))
+	(setq fname (expand-file-name fname))
 	(garbage-collect)
 	(process-send-string timidity-cmd-process
 			     (format "L\nPLAY %s\n" fname))
@@ -384,9 +384,9 @@
     (while (not (string= "" (setq f (read-file-name
 				     "MIDI File: "
 				     (file-name-directory
-				      (timidity-expand-file-name f))
+				      (expand-file-name f))
 				     ""))))
-      (setq files (cons (timidity-expand-file-name f) files)))
+      (setq files (cons (expand-file-name f) files)))
     (setq timidity-next-files (append (reverse files) timidity-next-files))
     (timidity-next-file)))
 
@@ -471,15 +471,6 @@
 	    (setq diff (1- diff))))
       (forward-char 1)
       (insert-char ?\  diff))))
-
-(defun timidity-expand-file-name (fname)
-  (if (or (string-match "^http://" fname)
-	  (string-match "^ftp://" fname)
-	  (string-match "^file://" fname)
-	  (string-match "^news://" fname)
-	  (string-match "^mime:" fname))
-      fname
-    (expand-file-name fname)))
 
 (or (fboundp 'member)
     (defun member (elt lis)
