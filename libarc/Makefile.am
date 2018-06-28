@@ -26,22 +26,12 @@ AM_CPPFLAGS = \
 noinst_LIBRARIES = libarc.a
 
 libarc_a_SOURCES = \
-	arc.c \
-	arc.h \
-	arc_lzh.c \
-	deflate.c \
-	explode.c \
-	explode.h \
-	inflate.c \
-	unlzh.c \
-	unlzh.h \
 	url.c \
 	url.h \
 	url_buff.c \
 	url_dir.c \
 	url_file.c \
-	url_mem.c \
-	zip.h
+	url_mem.c
 
 libarc_a_LIBADD = $(NET_OBJS)
 

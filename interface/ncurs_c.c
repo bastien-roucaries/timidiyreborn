@@ -82,8 +82,9 @@ extern void sleep(unsigned long);
 #include "miditrace.h"
 #include "timer.h"
 #include "bitset.h"
-#include "arc.h"
 #include "aq.h"
+
+#include <fnmatch.h>
 
 #ifdef USE_PDCURSES
 int PDC_set_ctrl_break(bool setting);
@@ -2405,7 +2406,7 @@ static int ctl_cmd_forward_search(void)
 	    name = mfp->file;
 	else
 	    name++;
-	if(arc_wildmat(name, ptn))
+	if(!fnmatch(ptn,name,FNM_PATHNAME))
 	{
 	    found = 1;
 	    break;

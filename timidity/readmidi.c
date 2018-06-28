@@ -43,7 +43,6 @@
 #include "controls.h"
 #include "strtab.h"
 #include "memb.h"
-#include "arc.h"
 #include "mod.h"
 #include "wrd.h"
 #include "tables.h"

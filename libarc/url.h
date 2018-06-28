@@ -176,7 +176,6 @@ enum url_types
     URL_dir_t,			/* Directory entry */
     URL_mem_t,			/* On memory */
     URL_buff_t,			/* Buffered stream */
-    URL_arc_t,			/* arc stream */
 
 
     URL_extension_t = 100	/* extentional stream >= 100 */

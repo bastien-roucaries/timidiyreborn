@@ -54,7 +54,6 @@
 #include "controls.h"
 #include "miditrace.h"
 #include "recache.h"
-#include "arc.h"
 #include "reverb.h"
 #include "wrd.h"
 #include "aq.h"

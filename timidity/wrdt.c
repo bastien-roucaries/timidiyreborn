@@ -34,7 +34,6 @@
 #include "instrum.h"
 #include "playmidi.h"
 #include "readmidi.h"
-#include "arc.h"
 #include "interface.h"
 
 /*
@@ -185,7 +184,7 @@ void wrd_add_path(char *path, int pathlen)
 	return;
 
     if(current_file_info &&
-       get_archive_type(current_file_info->filename) != -1)
+       current_file_info->filename != NULL)
     {
 	MBlockList buf;
 	char *arc_path;
@@ -238,7 +237,7 @@ struct timidity_file *wrd_open_file(char *filename)
     StringTableNode *path;
     struct timidity_file *tf;
 
-    if(get_archive_type(filename) != -1)
+    if(filename != NULL)
 	return open_file(filename, OF_SILENT);
 
     for(path = path_list.head; path; path = path->next){

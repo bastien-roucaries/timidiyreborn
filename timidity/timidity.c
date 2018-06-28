@@ -84,7 +84,6 @@
 #endif /* SUPPORT_SOUNDSPEC */
 #include "resample.h"
 #include "recache.h"
-#include "arc.h"
 #include "strtab.h"
 #include "wrd.h"
 #define DEFINE_GLOBALS
@@ -5169,12 +5168,6 @@ static RETSIGTYPE sigterm_exit(int sig)
 }
 #endif /* HAVE_SIGNAL */
 
-static void timidity_arc_error_handler(char *error_message)
-{
-    extern int open_file_noise_mode;
-    if(open_file_noise_mode)
-	ctl->cmsg(CMSG_WARNING, VERB_NORMAL, "%s", error_message);
-}
 
 static PlayMode null_play_mode = {
     0,                          /* rate */
@@ -5249,8 +5242,7 @@ MAIN_INTERFACE void timidity_start_initialize(void)
 	default_program[i] = DEFAULT_PROGRAM;
 	memset(channel[i].drums, 0, sizeof(channel[i].drums));
     }
-    arc_error_handler = timidity_arc_error_handler;
-
+    
     if(play_mode == NULL) play_mode = &null_play_mode;
 
     if(is_first) /* initialize once time */
@@ -5730,7 +5722,6 @@ MAIN_INTERFACE int timidity_play_main(int nfiles, char **files)
 	close_soundspec();
 #endif /* SUPPORT_SOUNDSPEC */
 
-    free_archive_files();
     return retval;
 }
 

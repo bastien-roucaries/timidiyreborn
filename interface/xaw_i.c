@@ -45,6 +45,8 @@
 #include <sys/stat.h>
 #endif /* HAVE_SYS_STAT_H */
 
+#include <fnmatch.h>
+
 #include "xaw.h"
 #include "x_trace.h"
 #include "timidity.h"
@@ -54,7 +56,6 @@
 #include "readmidi.h"
 #include "controls.h"
 #include "strtab.h"
-#include "arc.h"
 
 #include <X11/Intrinsic.h>
 #include <X11/StringDefs.h>
@@ -2285,7 +2286,7 @@ filterDirList(ldPointer ld, Boolean toggle) {
   if (!strcmp(filter, "SetDirList")) strcpy(filter, cur_filter);
   init_string_table(&strtab);
   while ((filename = *(fulllist++)) != NULL) {
-    if (!(arc_case_wildmat(filename, filter))) continue;
+    if (fnmatch(filter,filename,FNM_PATHNAME)) continue;
     f_num++;
     put_string_table(&strtab, filename, strlen(filename));
   }

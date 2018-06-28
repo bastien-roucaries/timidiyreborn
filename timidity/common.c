@@ -63,7 +63,6 @@
 #include "common.h"
 #include "output.h"
 #include "controls.h"
-#include "arc.h"
 #include "wrd.h"
 #include "strtab.h"
 #include "support.h"
@@ -224,9 +223,8 @@ struct timidity_file *try_to_open(char *name)
     URL url;
     int len;
 
-    if((url = url_arc_open(name)) == NULL)
-      if((url = url_open(name)) == NULL)
-	return NULL;
+    if((url = url_open(name)) == NULL)
+       return NULL;
 
     tf = (struct timidity_file *)safe_malloc(sizeof(struct timidity_file));
     tf->url = url;
@@ -930,15 +928,7 @@ char **expand_file_archives(char **files, int *nfiles_in_out)
 	return NULL;
       }
 
-    /* Second, expand archive files */
-    new_nfiles = nfiles;
-    open_file_noise_mode = OF_NORMAL;
-    new_files = expand_archive_names(&new_nfiles, files);
-    free(files[0]);
-    free(files);
-
-    *nfiles_in_out = new_nfiles;
-    return new_files;
+    return files;
 }
 
 #ifdef RAND_MAX
