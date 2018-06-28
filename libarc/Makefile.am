@@ -40,7 +40,6 @@ libarc_a_SOURCES = \
 	unlzh.h \
 	url.c \
 	url.h \
-	url_b64decode.c \
 	url_buff.c \
 	url_cache.c \
 	url_dir.c \

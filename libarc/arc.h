@@ -123,9 +123,7 @@ enum
 
     /* Encode for MIME */
     ARCHIVEC_UU,		/* uu encoded */
-    ARCHIVEC_B64,		/* base64 encoded */
     ARCHIVEC_QS,		/* quoted string encoded */
-    ARCHIVEC_HQX		/* HQX encoded */
 };
 
 /* archive_type */

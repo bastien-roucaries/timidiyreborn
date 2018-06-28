@@ -210,9 +210,7 @@ ArchiveEntryNode *next_mime_entry(void)
 	comptype = -1;
 	if(encoding != NULL)
 	{
-	    if(strcmp("base64", encoding) == 0)
-		comptype = ARCHIVEC_B64;
-	    else if(strcmp("quoted-printable", encoding) == 0)
+	    if(strcmp("quoted-printable", encoding) == 0)
 		comptype = ARCHIVEC_QS;
 	    else if(strcmp("X-uuencode", encoding) == 0)
 	    {
@@ -621,9 +619,6 @@ static void *arc_mime_decode(void *data, long size,
     {
     case ARCHIVEC_UU:		/* uu encoded */
       url = url_uudecode_open(url, 1);
-      break;
-    case ARCHIVEC_B64:		/* base64 encoded */
-      url = url_b64decode_open(url, 1);
       break;
     case ARCHIVEC_QS:		/* quoted string encoded */
       url = url_qsdecode_open(url, 1);
