@@ -77,7 +77,6 @@ static struct
     {".neo",	ARCHIVE_ZIP},
     {".lzh",	ARCHIVE_LZH},
     {".lha",	ARCHIVE_LZH},
-    {".mime",	ARCHIVE_MIME},
     {PATH_STRING, ARCHIVE_DIR},
     {NULL, -1}
 };
@@ -198,10 +197,6 @@ int get_archive_type(char *archive_name)
     char *p;
     int archive_name_length, delim;
 
-    if(strncmp(archive_name, "mail:", 5) == 0 ||
-       strncmp(archive_name, "mime:", 5) == 0)
-	return ARCHIVE_MIME;
-
     if((p = strrchr(archive_name, '#')) != NULL)
     {
 	archive_name_length = p - archive_name;
@@ -272,15 +267,6 @@ ArchiveEntryNode *arc_parse_entry(URL url, int archive_type)
       case ARCHIVE_LZH:
 	next_header_entry = next_lzh_entry;
 	break;
-      case ARCHIVE_MIME:
-	if(!IS_URL_SEEK_SAFE(url))
-	{
-	    orig = url;
-	    if((url = url_cache_open(orig, 0)) == NULL)
-		return NULL;
-	}
-	next_header_entry = next_mime_entry;
-	break;
       default:
 	return NULL;
     }
@@ -318,7 +304,6 @@ static ArchiveFileList *add_arc_filelist(char *basename, int archive_type)
       case ARCHIVE_TGZ:
       case ARCHIVE_ZIP:
       case ARCHIVE_LZH:
-      case ARCHIVE_MIME:
 	break;
       default:
 	return NULL;

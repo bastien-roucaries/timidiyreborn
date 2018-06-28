@@ -86,7 +86,6 @@ extern ArchiveEntryNode *new_entry_node(char *name, int len);
 extern ArchiveEntryNode *next_tar_entry(void);
 extern ArchiveEntryNode *next_zip_entry(void);
 extern ArchiveEntryNode *next_lzh_entry(void);
-extern ArchiveEntryNode *next_mime_entry(void);
 extern void free_entry_node(ArchiveEntryNode *entry);
 
 /* Compression/Encoding type */
@@ -131,7 +130,6 @@ enum
     ARCHIVE_ZIP,
     ARCHIVE_LZH,
     ARCHIVE_DIR,
-    ARCHIVE_MIME,
     ARCHIVE_NEWSGROUP
 };
 

@@ -29,7 +29,6 @@ libarc_a_SOURCES = \
 	arc.c \
 	arc.h \
 	arc_lzh.c \
-	arc_mime.c \
 	arc_tar.c \
 	arc_zip.c \
 	deflate.c \
