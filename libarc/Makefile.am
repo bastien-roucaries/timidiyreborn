@@ -28,7 +28,6 @@ noinst_LIBRARIES = libarc.a
 libarc_a_SOURCES = \
 	url.c \
 	url.h \
-	url_buff.c \
 	url_file.c \
 	url_mem.c
 

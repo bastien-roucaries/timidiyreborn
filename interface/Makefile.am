@@ -387,9 +387,6 @@ bitset.$(so): $(top_srcdir)/utils/bitset.c
 timer.$(so): $(top_srcdir)/utils/timer.c
 	$(COMPILE) $(SHCFLAGS) -o $@ -c $<
 
-url_buff.$(so): $(top_srcdir)/libarc/url_buff.c
-	$(COMPILE) $(SHCFLAGS) -o $@ -c $<
-
 support.$(so): $(top_srcdir)/utils/support.c
 	$(COMPILE) $(SHCFLAGS) -o $@ -c $<
 
@@ -414,8 +411,8 @@ if_vt100.$(so): vt100_c.$(so) support.$(so) vt100.$(so) bitset.$(so) timer.$(so)
 if_xaw.$(so): xaw_c.$(so) support.$(so) xaw_i.$(so) x_trace.${so} timer.$(so) ${XDND_SO}
 	$(SHLD) $(LDFLAGS) -o $@ xaw_c.$(so) support.$(so) xaw_i.$(so) x_trace.${so} timer.$(so) ${XDND_SO} $(a_so_libs)
 
-if_xskin.$(so): xskin_c.$(so) support.$(so) xskin_i.$(so) xskin_loadBMP.$(so) xskin_spectrum.$(so) url_buff.$(so)
-	$(SHLD) $(LDFLAGS) -o $@ xskin_c.$(so) support.$(so) xskin_i.$(so) xskin_loadBMP.$(so) xskin_spectrum.$(so) url_buff.$(so) $(i_so_libs)
+if_xskin.$(so): xskin_c.$(so) support.$(so) xskin_i.$(so) xskin_loadBMP.$(so) xskin_spectrum.$(so)
+	$(SHLD) $(LDFLAGS) -o $@ xskin_c.$(so) support.$(so) xskin_i.$(so) xskin_loadBMP.$(so) xskin_spectrum.$(so) $(i_so_libs)
 
 if_gtk.$(so): gtk_c.$(so) support.$(so) gtk_i.$(so) gtk_p.$(so)
 	$(SHLD) $(LDFLAGS) -o $@ gtk_c.$(so) support.$(so) gtk_i.$(so) gtk_p.$(so) $(g_so_libs)

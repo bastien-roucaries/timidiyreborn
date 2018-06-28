@@ -158,10 +158,6 @@ extern URL url_file_open(char *filename);
 
 /* No URL_module */
 extern URL url_mem_open(char *memory, long memsiz, int autofree);
-extern URL url_buff_open(URL url, int autoclose);
-//extern URL url_cache_open(URL url, int autoclose);
-//extern void url_cache_detach(URL url);
-//extern void url_cache_disable(URL url);
 
 
 extern char *url_lib_version;

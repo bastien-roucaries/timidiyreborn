@@ -37,7 +37,6 @@
 #include "playmidi.h"
 #include "controls.h"
 #include "output.h"
-#include "arc.h"
 
 
 typedef struct {
@@ -124,11 +123,8 @@ Pixmap xskin_loadBMP( Display *d, Window w, char *filename,
   gshift = 15-highbit(xskin_vis->green_mask);
   bshift = 15-highbit(xskin_vis->blue_mask);
 
-  fp = open_file( filename, 1, OF_SILENT );
+  fp = open_file( filename, OF_SILENT );
   if ( fp == NULL ) return ret;
-  if ( fp->url->url_tell == NULL ) {
-    fp->url = url_buff_open( fp->url, 1 );
-  }
 
   bmp = loadBMPHeader( fp );
   if ( bmp==NULL ) goto finish1;

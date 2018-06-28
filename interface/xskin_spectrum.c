@@ -111,7 +111,7 @@ int xskin_loadviscolor( Display *d, Window w, char *filename ) {
 
   } else {
 
-    fp = open_file( filename, 1, OF_SILENT );
+    fp = open_file( filename, OF_SILENT );
     if ( fp == NULL ) return 0;
     
     if ( (i = readrgb(d,fp))<0 ) goto end; /* spe_ana : background */
