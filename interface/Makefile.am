@@ -24,7 +24,6 @@ SUBDIRS = motif_bitmaps bitmaps pixmaps
 
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/timidity \
-	-I$(top_srcdir)/libarc \
 	-I$(top_srcdir)/utils
 
 noinst_LIBRARIES = libinterface.a

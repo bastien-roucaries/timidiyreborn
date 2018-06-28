@@ -32,8 +32,6 @@ libutils_a_SOURCES = \
 	tmdy_getopt.h \
 	mblock.c \
 	mblock.h \
-	memb.c \
-	memb.h \
 	strtab.c \
 	strtab.h \
 	support.c \

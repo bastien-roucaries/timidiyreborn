@@ -20,7 +20,6 @@ include $(top_srcdir)/common.makefile.in
 
 AM_CPPFLAGS = \
 	-I$(top_srcdir) \
-	-I$(top_srcdir)/libarc \
 	-I$(top_srcdir)/libunimod \
 	-I$(top_srcdir)/interface \
 	-I$(top_srcdir)/utils \
@@ -201,14 +200,12 @@ if VCPP
 timidity_LDADD = \
 	$(SYSEXTRAS:.c=.$(OBJEXT)) \
 	$(top_builddir)/interface/interface.lib \
-	$(top_builddir)/libarc/arc.lib \
 	$(top_builddir)/libunimod/unimod.lib \
 	$(top_builddir)/utils/utils.lib \
 	$(W32GUI_RES)
 
 timidity_dep = $(SYSEXTRAS:.c=.$(OBJEXT)) \
 	$(top_builddir)/interface/interface.lib \
-	$(top_builddir)/libarc/arc.lib \
 	$(top_builddir)/libunimod/unimod.lib \
 	$(top_builddir)/utils/utils.lib \
 	$(W32GUI_RES)
@@ -219,13 +216,11 @@ if POCC
 timidity_LDADD = \
 	$(SYSEXTRAS:.c=.$(OBJEXT)) \
 	$(top_builddir)/interface/interface.lib \
-	$(top_builddir)/libarc/arc.lib \
 	$(top_builddir)/libunimod/unimod.lib \
 	$(top_builddir)/utils/utils.lib \
 	$(W32GUI_RES)
 timidity_dep = $(SYSEXTRAS:.c=.$(OBJEXT)) \
 	$(top_builddir)/interface/interface.lib \
-	$(top_builddir)/libarc/arc.lib \
 	$(top_builddir)/libunimod/unimod.lib \
 	$(top_builddir)/utils/utils.lib \
 	$(W32GUI_RES)
@@ -235,7 +230,6 @@ else
 if BORLANDC
 timidity_LDADD = \
       interface.lib \
-      arc.lib \
       unimod.lib \
       utils.lib
 BORLANDC_LINK_OPTIONS = \
@@ -245,7 +239,6 @@ BORLANDC_LINK_OPTIONS = \
       -L..\\utils
 timidity_dep = $(SYSEXTRAS:.c=.$(OBJEXT)) \
 	$(top_builddir)/interface/interface.lib \
-	$(top_builddir)/libarc/arc.lib \
 	$(top_builddir)/libunimod/unimod.lib \
 	$(top_builddir)/utils/utils.lib \
 	$(W32GUI_RES)
@@ -253,17 +246,14 @@ else
 if WATCOM_C
 timidity_LDADD = \
       interface.lib \
-      arc.lib \
       unimod.lib \
       utils.lib
 WATCOM_LINK_OPTIONS = \
       LIBPath ..\\interface \
-      LibPath ..\\libarc \
       LibPath ..\\libunimod \
       LibPath ..\\utils
 timidity_dep = $(SYSEXTRAS:.c=.$(OBJEXT)) \
 	$(top_builddir)/interface/interface.lib \
-	$(top_builddir)/libarc/arc.lib \
 	$(top_builddir)/libunimod/unimod.lib \
 	$(top_builddir)/utils/utils.lib \
 	$(W32GUI_RES)
@@ -272,14 +262,12 @@ if DMC
 timidity_LDADD = \
 	$(SYSEXTRAS:.c=.$(OBJEXT)) \
 	$(top_builddir)\\interface\\interface.lib \
-	$(top_builddir)\\libarc\\arc.lib \
 	$(top_builddir)\\libunimod\\unimod.lib \
 	$(top_builddir)\\utils\\utils.lib \
 	$(W32GUI_RES)
 
 timidity_dep = $(SYSEXTRAS:.c=.$(OBJEXT)) \
 	$(top_builddir)/interface/interface.lib \
-	$(top_builddir)/libarc/arc.lib \
 	$(top_builddir)/libunimod/unimod.lib \
 	$(top_builddir)/utils/utils.lib \
 	$(W32GUI_RES)
@@ -287,14 +275,12 @@ else
 timidity_LDADD = \
 	$(SYSEXTRAS:.c=.$(OBJEXT)) \
 	$(top_builddir)/interface/libinterface.a \
-	$(top_builddir)/libarc/libarc.a \
 	$(top_builddir)/libunimod/libunimod.a \
 	$(top_builddir)/utils/libutils.a \
 	$(W32GUI_RES)
 
 timidity_dep = $(SYSEXTRAS:.c=.$(OBJEXT)) \
 	$(top_builddir)/interface/libinterface.a \
-	$(top_builddir)/libarc/libarc.a \
 	$(top_builddir)/libunimod/libunimod.a \
 	$(top_builddir)/utils/libutils.a \
 	$(W32GUI_RES)
@@ -466,8 +452,6 @@ endif
 $(top_builddir)/interface/libinterface.a $(W32GUI_RES):
 	cd $(top_builddir)/interface; $(MAKE)
 
-$(top_builddir)/libarc/libarc.a:
-	cd $(top_builddir)/libarc; $(MAKE)
 
 $(top_builddir)/libunimod/libunimod.a:
 	cd $(top_builddir)/libunimod; $(MAKE)

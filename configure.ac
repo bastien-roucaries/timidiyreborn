@@ -2194,7 +2194,6 @@ AC_CONFIG_FILES([
   interface/motif_bitmaps/Makefile
   interface/bitmaps/Makefile
   interface/pixmaps/Makefile
-  libarc/Makefile
   libunimod/Makefile
   timidity/Makefile
   windrv/Makefile

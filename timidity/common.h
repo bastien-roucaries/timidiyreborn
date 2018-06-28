@@ -27,7 +27,7 @@
 #include <string.h>
 
 #include "sysdep.h"
-#include "url.h"
+#include <stdio.h>
 #include "mblock.h"
 
 extern char *program_name, current_filename[];
@@ -40,7 +40,7 @@ typedef struct {
 
 struct timidity_file
 {
-    URL url;
+    FILE * url;
     char *tmpname;
 };
 
@@ -62,7 +62,7 @@ extern struct timidity_file *open_with_mem(char *mem, int32 memlen,
 extern void close_file(struct timidity_file *tf);
 extern void skip(struct timidity_file *tf, size_t len);
 extern char *tf_gets(char *buff, int n, struct timidity_file *tf);
-#define tf_getc(tf) (url_getc((tf)->url))
+#define tf_getc(tf) (fgetc(tf->url))
 extern long tf_read(void *buff, int32 size, int32 nitems,
 		    struct timidity_file *tf);
 extern long tf_seek(struct timidity_file *tf, long offset, int whence);

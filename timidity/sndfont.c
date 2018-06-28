@@ -64,8 +64,7 @@
 float freq_fourier(Sample *sp, int *chord);
 int assign_pitch_to_freq(float freq);
 
-#define FILENAME_NORMALIZE(fname) url_expand_home_dir(fname)
-#define FILENAME_REDUCED(fname)   url_unexpand_home_dir(fname)
+
 #define SFMalloc(rec, count)      new_segment(&(rec)->pool, count)
 #define SFStrdup(rec, s)          strdup_mblock(&(rec)->pool, s)
 
@@ -228,7 +227,7 @@ static SFInsts *find_soundfont(char *sf_file)
 {
     SFInsts *sf;
 
-    sf_file = FILENAME_NORMALIZE(sf_file);
+
     for(sf = sfrecs; sf != NULL; sf = sf->next)
 	if(sf->fname != NULL && strcmp(sf->fname, sf_file) == 0)
 	    return sf;
@@ -239,7 +238,7 @@ static SFInsts *new_soundfont(char *sf_file)
 {
 	SFInsts *sf, *prev;
 
-	sf_file = FILENAME_NORMALIZE(sf_file);
+
 	for(sf = sfrecs, prev = NULL; sf != NULL; prev = sf, sf = sf->next)
 	{
 		if(sf->fname == NULL)
@@ -256,7 +255,7 @@ static SFInsts *new_soundfont(char *sf_file)
 		sf = (SFInsts *)safe_malloc(sizeof(SFInsts));
 	memset(sf, 0, sizeof(SFInsts));
 	init_mblock(&sf->pool);
-	sf->fname = SFStrdup(sf, FILENAME_NORMALIZE(sf_file));
+	sf->fname = SFStrdup(sf, sf_file);
 	sf->def_order = DEFAULT_SOUNDFONT_ORDER;
 	sf->amptune = 1.0;
 	return sf;
@@ -342,12 +341,12 @@ static void init_sf(SFInsts *rec)
 	int i;
 
 	ctl->cmsg(CMSG_INFO, VERB_NOISY, "Init soundfonts `%s'",
-		  FILENAME_REDUCED(rec->fname));
+		  rec->fname);
 
 	if ((rec->tf = open_file(rec->fname, OF_VERBOSE)) == NULL) {
 		ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
 			  "Can't open soundfont file %s",
-			  FILENAME_REDUCED(rec->fname));
+			  rec->fname);
 		end_soundfont(rec);
 		return;
 	}
@@ -388,14 +387,9 @@ static void init_sf(SFInsts *rec)
 	free_soundfont(&sfinfo);
 
 	if (! opt_sf_close_each_file) {
-		if (! IS_URL_SEEK_SAFE(rec->tf->url)) {
-			close_file(rec->tf);
-			rec->tf = NULL;
-		}
-	} else {
 		close_file(rec->tf);
 		rec->tf = NULL;
-	}
+        }
 }
 
 void init_load_soundfont(void)
@@ -452,7 +446,7 @@ static Instrument *try_load_soundfont(SFInsts *rec, int order, int bank,
 		if ((rec->tf = open_file(rec->fname, OF_VERBOSE)) == NULL) {
 			ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
 				  "Can't open soundfont file %s",
-				  FILENAME_REDUCED(rec->fname));
+				  rec->fname);
 			end_soundfont(rec);
 			return NULL;
 		}
@@ -1917,29 +1911,6 @@ ControlMode w32gui_control_mode =
     ctl_event
 };
 #endif
-extern struct URL_module URL_module_file;
-#ifndef __MACOS__
-extern struct URL_module URL_module_dir;
-#endif /* __MACOS__ */
-static struct URL_module *url_module_list[] =
-{
-    &URL_module_file,
-#ifndef __MACOS__
-    &URL_module_dir,
-#endif /* __MACOS__ */
-#if defined(main) || defined(ANOTHER_MAIN)
-    /* You can put some other modules */
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-#endif /* main */
-    NULL
-};
 
 static void cfgforsf_usage(const char *program_name, int status)
 {
@@ -2085,8 +2056,6 @@ int main(int argc, char **argv)
 	memset(x_playnote, -1, sizeof x_playnote);
 	#endif
 	ctl->verbosity = -1;
-	for(i = 0; url_module_list[i]; i++)
-	    url_add_module(url_module_list[i]);
 	init_freq_table();
 	init_bend_fine();
 	init_bend_coarse();

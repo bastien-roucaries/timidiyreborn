@@ -118,13 +118,13 @@ _mm_calloc (size_t nitems, size_t size)
 /*========== Read functions */
 
 int 
-_mm_read_string (CHAR * buffer, int number, URL reader)
+_mm_read_string (CHAR * buffer, int number, FILE * reader)
 {
-  return url_nread (reader, buffer, number);
+  return fread (buffer, 1, number, reader);
 }
 
 UWORD 
-_mm_read_M_UWORD (URL reader)
+_mm_read_M_UWORD (FILE * reader)
 {
   UWORD result = ((UWORD) _mm_read_UBYTE (reader)) << 8;
   result |= _mm_read_UBYTE (reader);
@@ -132,7 +132,7 @@ _mm_read_M_UWORD (URL reader)
 }
 
 UWORD 
-_mm_read_I_UWORD (URL reader)
+_mm_read_I_UWORD (FILE * reader)
 {
   UWORD result = _mm_read_UBYTE (reader);
   result |= ((UWORD) _mm_read_UBYTE (reader)) << 8;
@@ -140,7 +140,7 @@ _mm_read_I_UWORD (URL reader)
 }
 
 ULONG 
-_mm_read_M_ULONG (URL reader)
+_mm_read_M_ULONG (FILE * reader)
 {
   ULONG result = ((ULONG) _mm_read_M_UWORD (reader)) << 16;
   result |= _mm_read_M_UWORD (reader);
@@ -148,7 +148,7 @@ _mm_read_M_ULONG (URL reader)
 }
 
 ULONG 
-_mm_read_I_ULONG (URL reader)
+_mm_read_I_ULONG (FILE * reader)
 {
   ULONG result = _mm_read_I_UWORD (reader);
   result |= ((ULONG) _mm_read_I_UWORD (reader)) << 16;
@@ -156,35 +156,35 @@ _mm_read_I_ULONG (URL reader)
 }
 
 SWORD 
-_mm_read_M_SWORD (URL reader)
+_mm_read_M_SWORD (FILE * reader)
 {
   return ((SWORD) _mm_read_M_UWORD (reader));
 }
 
 SWORD 
-_mm_read_I_SWORD (URL reader)
+_mm_read_I_SWORD (FILE * reader)
 {
   return ((SWORD) _mm_read_I_UWORD (reader));
 }
 
 SLONG 
-_mm_read_M_SLONG (URL reader)
+_mm_read_M_SLONG (FILE * reader)
 {
   return ((SLONG) _mm_read_M_ULONG (reader));
 }
 
 SLONG 
-_mm_read_I_SLONG (URL reader)
+_mm_read_I_SLONG (FILE * reader)
 {
   return ((SLONG) _mm_read_I_ULONG (reader));
 }
 
 #define DEFINE_MULTIPLE_READ_FUNCTION(type_name,type)				\
-int _mm_read_##type_name##S (type *buffer,int number,URL reader)		\
+int _mm_read_##type_name##S (type *buffer,int number,FILE * reader)		\
 {										\
 	while(number-->0)							\
 		*(buffer++)=_mm_read_##type_name(reader);			\
-	return !url_eof(reader);						\
+	return !feof(reader);						\
 }
 
 DEFINE_MULTIPLE_READ_FUNCTION (M_SWORD, SWORD)

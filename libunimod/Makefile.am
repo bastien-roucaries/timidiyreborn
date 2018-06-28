@@ -22,7 +22,6 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir) \
 	-I$(top_srcdir)/timidity \
 	-I$(top_srcdir)/utils \
-	-I$(top_srcdir)/libarc \
 	$(EXTRAINCS)
 
 noinst_LIBRARIES = libunimod.a

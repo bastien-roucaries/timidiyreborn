@@ -45,7 +45,6 @@ extern "C"
 #endif
 
 #include "unimod.h"
-#include "url.h"
 
 #ifdef __W32__
 #pragma warning(disable:4761)
@@ -63,36 +62,36 @@ extern void *_mm_calloc (size_t, size_t);
 
 /*========== Portable file I/O */
 
-#define _mm_read_SBYTE(x)	((SBYTE)url_getc(x))
-#define _mm_read_UBYTE(x)	((UBYTE)url_getc(x))
-#define _mm_read_SBYTES(x,y,z)	url_nread(z,(void *)x,y)
-#define _mm_read_UBYTES(x,y,z)	url_nread(z,(void *)x,y)
-#define _mm_fseek(x,y,z)	url_seek(x,y,z)
-#define _mm_ftell(x)		url_tell(x)
-#define _mm_eof(x)		url_eof(x)
-#define _mm_rewind(x)		_mm_fseek(x,0,SEEK_SET)
+#define _mm_read_SBYTE(x)	((SBYTE)getc(x))
+#define _mm_read_UBYTE(x)	((UBYTE)getc(x))
+#define _mm_read_SBYTES(x,y,z)  fread((void *)x,1,y,z)
+#define _mm_read_UBYTES(x,y,z)	fread((void *)x,1,y,z)
+#define _mm_fseek(x,y,z)	fseek(x,y,z)
+#define _mm_ftell(x)		ftell(x)
+#define _mm_eof(x)		feof(x)
+#define _mm_rewind(x)		fseek(x,0,SEEK_SET)
 
-extern int _mm_read_string (CHAR *, int, URL);
+extern int _mm_read_string (CHAR *, int, FILE *);
 
-extern SWORD _mm_read_M_SWORD (URL);
-extern SWORD _mm_read_I_SWORD (URL);
-extern UWORD _mm_read_M_UWORD (URL);
-extern UWORD _mm_read_I_UWORD (URL);
+extern SWORD _mm_read_M_SWORD (FILE *);
+extern SWORD _mm_read_I_SWORD (FILE *);
+extern UWORD _mm_read_M_UWORD (FILE *);
+extern UWORD _mm_read_I_UWORD (FILE *);
 
-extern SLONG _mm_read_M_SLONG (URL);
-extern SLONG _mm_read_I_SLONG (URL);
-extern ULONG _mm_read_M_ULONG (URL);
-extern ULONG _mm_read_I_ULONG (URL);
+extern SLONG _mm_read_M_SLONG (FILE *);
+extern SLONG _mm_read_I_SLONG (FILE *);
+extern ULONG _mm_read_M_ULONG (FILE *);
+extern ULONG _mm_read_I_ULONG (FILE *);
 
-extern int _mm_read_M_SWORDS (SWORD *, int, URL);
-extern int _mm_read_I_SWORDS (SWORD *, int, URL);
-extern int _mm_read_M_UWORDS (UWORD *, int, URL);
-extern int _mm_read_I_UWORDS (UWORD *, int, URL);
+extern int _mm_read_M_SWORDS (SWORD *, int, FILE *);
+extern int _mm_read_I_SWORDS (SWORD *, int, FILE *);
+extern int _mm_read_M_UWORDS (UWORD *, int, FILE *);
+extern int _mm_read_I_UWORDS (UWORD *, int, FILE *);
 
-extern int _mm_read_M_SLONGS (SLONG *, int, URL);
-extern int _mm_read_I_SLONGS (SLONG *, int, URL);
-extern int _mm_read_M_ULONGS (ULONG *, int, URL);
-extern int _mm_read_I_ULONGS (ULONG *, int, URL);
+extern int _mm_read_M_SLONGS (SLONG *, int, FILE *);
+extern int _mm_read_I_SLONGS (SLONG *, int, FILE *);
+extern int _mm_read_M_ULONGS (ULONG *, int, FILE *);
+extern int _mm_read_I_ULONGS (ULONG *, int, FILE *);
 
 
 /*========== Loaders */
@@ -111,7 +110,7 @@ typedef struct MLOADER
 MLOADER;
 
 /* internal loader variables: */
-extern URL modreader;
+extern FILE * modreader;
 extern UWORD finetune[16];
 extern MODULE of;		/* static unimod loading space */
 

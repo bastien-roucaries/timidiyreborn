@@ -544,24 +544,6 @@ extern StringTable wrd_read_opts;
 
 extern int SecondMode;
 
-extern struct URL_module URL_module_file;
-
-MAIN_INTERFACE struct URL_module *url_module_list[] =
-{
-    &URL_module_file,
-#if defined(main) || defined(ANOTHER_MAIN)
-    /* You can put some other modules */
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-#endif /* main */
-    NULL
-};
 
 #ifdef IA_DYNAMIC
 #include "dlutils.h"
@@ -4631,7 +4613,7 @@ static inline int parse_opt_o(char *arg)
 {
 	if (opt_output_name)
 		free(opt_output_name);
-	opt_output_name = safe_strdup(url_expand_home_dir(arg));
+	opt_output_name = safe_strdup(arg);
 	return 0;
 }
 
@@ -5240,8 +5222,6 @@ MAIN_INTERFACE void timidity_start_initialize(void)
     {
 	got_a_configuration = 0;
 
-	for(i = 0; url_module_list[i]; i++)
-	    url_add_module(url_module_list[i]);
 	init_string_table(&opt_config_string);
 	init_freq_table();
 	init_freq_table_tuning();

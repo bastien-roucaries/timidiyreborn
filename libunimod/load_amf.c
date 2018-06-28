@@ -117,7 +117,7 @@ AMF_Cleanup (void)
 }
 
 static BOOL 
-AMF_UnpackTrack (URL modreader)
+AMF_UnpackTrack (FILE* modreader)
 {
   ULONG tracksize;
   UBYTE row, cmd;

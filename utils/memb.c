@@ -162,19 +162,19 @@ long skip_read_memb(MemBuffer *b, long size)
 
 typedef struct _URL_memb
 {
-    char common[sizeof(struct _URL)];
+    char common[sizeof(FILE *)];
     MemBuffer *b;
     long pos;
     int autodelete;
 } URL_memb;
 
-static long url_memb_read(URL url, void *buff, long n);
-static int url_memb_fgetc(URL url);
-static long url_memb_seek(URL url, long offset, int whence);
-static long url_memb_tell(URL url);
-static void url_memb_close(URL url);
+static long url_memb_read(FILE* url, void *buff, long n);
+static int url_memb_fgetc(FILE* url);
+static long url_memb_seek(FILE* url, long offset, int whence);
+static long url_memb_tell(FILE* url);
+static void url_memb_close(FILE* url);
 
-URL memb_open_stream(MemBuffer *b, int autodelete)
+FILE * memb_open_stream(MemBuffer *b, int autodelete)
 {
     URL_memb *url;
 

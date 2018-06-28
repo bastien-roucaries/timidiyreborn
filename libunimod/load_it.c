@@ -417,7 +417,7 @@ IT_ReadPattern (UWORD patrows)
 }
 
 static void 
-LoadMidiString (URL modreader, CHAR * dest)
+LoadMidiString (FILE* modreader, CHAR * dest)
 {
   CHAR *cur, *last;
 
@@ -435,7 +435,7 @@ LoadMidiString (URL modreader, CHAR * dest)
 
 /* Load embedded midi information for resonant filters */
 static void 
-IT_LoadMidiConfiguration (URL modreader)
+IT_LoadMidiConfiguration (FILE* modreader)
 {
   int i;
 

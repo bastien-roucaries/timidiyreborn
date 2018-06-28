@@ -175,7 +175,7 @@ tmdy_mkstemp(char *tmpl)
 
 
 static char *
-url_dumpfile(URL url, const char *ext)
+url_dumpfile(FILE * url, const char *ext)
 {
   char filename[1024];
   char *tmpdir;
@@ -208,7 +208,7 @@ url_dumpfile(URL url, const char *ext)
     return NULL;
   }
 
-  while((n = url_read(url, buff, sizeof(buff))) > 0) {
+  while((n = fread(buff,1,sizeof(buff),url)) > 0) {
     size_t dummy = fwrite(buff, 1, n, fp); ++dummy;
   }
   fclose(fp);
@@ -220,10 +220,10 @@ url_dumpfile(URL url, const char *ext)
 struct timidity_file *try_to_open(char *name)
 {
     struct timidity_file *tf;
-    URL url;
+    FILE * url;
     int len;
 
-    if((url = url_open(name)) == NULL)
+    if((url = fopen(name,"r")) == NULL)
        return NULL;
 
     tf = (struct timidity_file *)safe_malloc(sizeof(struct timidity_file));
@@ -269,11 +269,11 @@ static int is_abs_path(const char *name)
 
 struct timidity_file *open_with_mem(char *mem, int32 memlen, int noise_mode)
 {
-    URL url;
+    FILE *  url;
     struct timidity_file *tf;
 
     errno = 0;
-    if((url = url_mem_open(mem, memlen, 0)) == NULL)
+    if((url = fmemopen(mem, memlen, "r")) == NULL)
     {
 	if(noise_mode >= 2)
 	    ctl->cmsg(CMSG_ERROR, VERB_NORMAL, "Can't open.");
@@ -379,7 +379,7 @@ struct timidity_file *open_file_r(char *name, int noise_mode)
 		return 0;
 	}
 	/* First try the given name */
-	strncpy(current_filename, url_unexpand_home_dir(name), 1023);
+	strncpy(current_filename, name, 1023);
 	current_filename[1023] = '\0';
 	if (noise_mode)
 		ctl->cmsg(CMSG_INFO, VERB_DEBUG, "Trying to open %s",
@@ -455,7 +455,7 @@ void close_file(struct timidity_file *tf)
 		;
 	}
 #endif /* __W32__ */
-	url_close(tf->url);
+	fclose(tf->url);
     }
     if(tf->tmpname != NULL)
     {
@@ -469,24 +469,24 @@ void close_file(struct timidity_file *tf)
 /* This is meant for skipping a few bytes. */
 void skip(struct timidity_file *tf, size_t len)
 {
-    url_skip(tf->url, (long)len);
+    fseek(tf->url, len,SEEK_CUR);
 }
 
 char *tf_gets(char *buff, int n, struct timidity_file *tf)
 {
-    return url_gets(tf->url, buff, n);
+    return fgets(buff, n, tf->url);
 }
 
 long tf_read(void *buff, int32 size, int32 nitems, struct timidity_file *tf)
 {
-    return url_nread(tf->url, buff, size * nitems) / size;
+    return fread(buff, size,nitems, tf->url);
 }
 
 long tf_seek(struct timidity_file *tf, long offset, int whence)
 {
     long prevpos;
 
-    prevpos = url_seek(tf->url, offset, whence);
+    prevpos = fseek(tf->url, offset, whence);
     if(prevpos == -1)
 	ctl->cmsg(CMSG_WARNING, VERB_NORMAL,
 		  "Warning: Can't seek file position");
@@ -497,12 +497,11 @@ long tf_tell(struct timidity_file *tf)
 {
     long pos;
 
-    pos = url_tell(tf->url);
+    pos = ftell(tf->url);
     if(pos == -1)
     {
 	ctl->cmsg(CMSG_WARNING, VERB_NORMAL,
 		  "Warning: Can't get current file position");
-	return (long)tf->url->nread;
     }
 
     return pos;

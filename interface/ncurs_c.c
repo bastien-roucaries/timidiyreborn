@@ -3083,13 +3083,12 @@ static MFnode *make_new_MFnode_entry(char *file)
 #ifdef MIDI_TITLE
 	mfp->title = title;
 #endif /* MIDI_TITLE */
-	mfp->file = safe_strdup(url_unexpand_home_dir(file));
+	mfp->file = safe_strdup(file);
 	mfp->infop = infop;
 	return mfp;
     }
 
-    cmsg(CMSG_WARNING, VERB_NORMAL, "%s: Not a midi file (Ignored)",
-	 url_unexpand_home_dir(file));
+    cmsg(CMSG_WARNING, VERB_NORMAL, "%s: Not a midi file (Ignored)",file);
     return NULL;
 }
 
@@ -3779,7 +3778,6 @@ static int is_directory(char *pathname)
 {
     struct stat stb;
 
-    pathname = url_expand_home_dir(pathname);
     if(stat(pathname, &stb) < 0)
 	return 0;
     return S_ISDIR(stb.st_mode);
@@ -3807,7 +3805,6 @@ static MFnode *MFnode_insert_node(MFnode *list, MFnode *node)
 static int mini_buff_completion(MiniBuffer *b)
 {
     char *text, *dir, *file, *pr;
-    URL url;
     DIR * d;
     struct dirent * e;
     char buff[BUFSIZ];
@@ -3936,7 +3933,6 @@ static int mini_buff_completion(MiniBuffer *b)
 	    }
 	}
     }
-    url_close(url);
 
     prefix -= strlen(file);
 

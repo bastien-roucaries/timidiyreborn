@@ -38,7 +38,7 @@
 
 #include <string.h>
 
-URL modreader;
+FILE * modreader;
 MODULE of;
 BOOL ML_8bitsamples;
 BOOL ML_monosamples;
@@ -63,7 +63,7 @@ typedef struct SAMPLOAD
     UWORD infmt, outfmt;
     int scalefactor;
     SAMPLE *sample;
-    URL reader;
+    FILE * reader;
   }
 SAMPLOAD;
 
@@ -95,7 +95,7 @@ static void SL_Sample8to16 (SAMPLOAD *);
 static void SL_Sample16to8 (SAMPLOAD *);
 static void SL_SampleSigned (SAMPLOAD *);
 static void SL_SampleUnsigned (SAMPLOAD *);
-static SAMPLOAD *SL_RegisterSample (SAMPLE *, URL);
+static SAMPLOAD *SL_RegisterSample (SAMPLE *, FILE *);
 static SWORD *SL_Load (SAMPLOAD *);
 static BOOL SL_Init (SAMPLOAD *);
 static void SL_Exit (SAMPLOAD *);
@@ -129,7 +129,7 @@ SL_Exit (SAMPLOAD * s)
 
 /* unpack a 8bit IT packed sample */
 static BOOL 
-read_itcompr8 (ITPACK * status, URL reader, SWORD * sl_buffer, UWORD count, UWORD * incnt)
+read_itcompr8 (ITPACK * status, FILE * reader, SWORD * sl_buffer, UWORD count, UWORD * incnt)
 {
   SWORD *dest = sl_buffer, *end = sl_buffer + count;
   UWORD x, y, needbits, havebits, new_count = 0;
@@ -216,7 +216,7 @@ read_itcompr8 (ITPACK * status, URL reader, SWORD * sl_buffer, UWORD count, UWOR
 
 /* unpack a 16bit IT packed sample */
 static BOOL 
-read_itcompr16 (ITPACK * status, URL reader, SWORD * sl_buffer, UWORD count, UWORD * incnt)
+read_itcompr16 (ITPACK * status, FILE * reader, SWORD * sl_buffer, UWORD count, UWORD * incnt)
 {
   SWORD *dest = sl_buffer, *end = sl_buffer + count;
   SLONG x, y, needbits, havebits, new_count = 0;
@@ -302,7 +302,7 @@ read_itcompr16 (ITPACK * status, URL reader, SWORD * sl_buffer, UWORD count, UWO
 }
 
 static BOOL 
-SL_LoadInternal (void *buffer, UWORD infmt, UWORD outfmt, int scalefactor, ULONG length, URL reader)
+SL_LoadInternal (void *buffer, UWORD infmt, UWORD outfmt, int scalefactor, ULONG length, FILE * reader)
 {
   SBYTE *bptr = (SBYTE *) buffer;
   SWORD *wptr = (SWORD *) buffer;
@@ -479,7 +479,7 @@ SL_Load (struct SAMPLOAD *sload)
 
 /* Registers a sample for loading when SL_LoadSamples() is called. */
 SAMPLOAD *
-SL_RegisterSample (SAMPLE * s, URL reader)
+SL_RegisterSample (SAMPLE * s, FILE * reader)
 {
   SAMPLOAD *news, *cruise;
 
@@ -1012,7 +1012,7 @@ ML_AllocUniMod (void)
 }
 
 CHAR *
-ML_LoadTitle (URL reader)
+ML_LoadTitle (FILE * reader)
 {
   MLOADER *l;
 
@@ -1038,7 +1038,7 @@ ML_LoadTitle (URL reader)
 
 /* Check if it is a module given a reader */
 BOOL 
-ML_Test (URL reader)
+ML_Test (FILE * reader)
 {
   MLOADER *l;
 
@@ -1057,7 +1057,7 @@ ML_Test (URL reader)
 
 /* Loads a module given a reader */
 MODULE *
-ML_Load (URL reader, int maxchan, BOOL curious)
+ML_Load (FILE * reader, int maxchan, BOOL curious)
 {
   int t;
   MLOADER *l;

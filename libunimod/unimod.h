@@ -31,7 +31,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "url.h"
+
 
 #ifdef __cplusplus
 extern "C"
@@ -504,9 +504,9 @@ extern BOOL ML_8bitsamples;
 extern BOOL ML_monosamples;
 extern CHAR *ML_InfoLoader (void);
 extern void ML_RegisterAllLoaders (void);
-extern BOOL ML_Test (URL);
-extern MODULE *ML_Load (URL, int, BOOL);
-extern CHAR *ML_LoadTitle (URL);
+extern BOOL ML_Test (FILE *);
+extern MODULE *ML_Load (FILE *, int, BOOL);
+extern CHAR *ML_LoadTitle (FILE *);
 extern void ML_Free (MODULE *);
 
 #ifdef __cplusplus

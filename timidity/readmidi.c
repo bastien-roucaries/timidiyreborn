@@ -4460,11 +4460,8 @@ static int read_smf_file(struct timidity_file *tf)
     current_file_info->format = format;
     current_file_info->tracks = tracks;
     current_file_info->divisions = divisions;
-    if(tf->url->url_tell != NULL)
-	current_file_info->hdrsiz = (int16)tf_tell(tf);
-    else
-	current_file_info->hdrsiz = -1;
-
+    current_file_info->hdrsiz = (int16)tf_tell(tf);
+    
     switch(format)
     {
       case 0:
@@ -4745,7 +4742,7 @@ MidiEvent *read_midi_file(struct timidity_file *tf, int32 *count, int32 *sp,
 
 	if(err == 2)
 	    return NULL;
-	url_rewind(tf->url);
+	rewind(tf->url);
     }
 
 #if MAX_CHANNELS > 16
@@ -4949,7 +4946,6 @@ struct midi_file_info *get_midi_file_info(char *filename, int newp)
 {
     struct midi_file_info *p;
 
-    filename = url_expand_home_dir(filename);
     /* Linear search */
     for(p = midi_file_info; p; p = p->next)
 	if(!strcmp(filename, p->filename))
@@ -5455,7 +5451,6 @@ int midi_file_save_as(char *in_name, char *out_name)
 	    return 0;
 	in_name = current_file_info->filename;
     }
-    out_name = (char *)url_expand_home_dir(out_name);
 
     ctl->cmsg(CMSG_INFO, VERB_NORMAL, "Save as %s...", out_name);
 

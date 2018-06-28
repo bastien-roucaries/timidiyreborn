@@ -22,7 +22,6 @@ ACLOCAL_AMFLAGS = -I autoconf
 M4DIR = autoconf
 SUBDIRS = \
 	utils \
-	libarc \
 	libunimod \
 	interface \
 	timidity \
