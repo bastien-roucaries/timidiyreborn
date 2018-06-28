@@ -1921,18 +1921,12 @@ extern struct URL_module URL_module_file;
 #ifndef __MACOS__
 extern struct URL_module URL_module_dir;
 #endif /* __MACOS__ */
-#ifdef HAVE_POPEN
-extern struct URL_module URL_module_pipe;
-#endif /* HAVE_POPEN */
 static struct URL_module *url_module_list[] =
 {
     &URL_module_file,
 #ifndef __MACOS__
     &URL_module_dir,
 #endif /* __MACOS__ */
-#if !defined(__MACOS__) && defined(HAVE_POPEN)
-    &URL_module_pipe,
-#endif
 #if defined(main) || defined(ANOTHER_MAIN)
     /* You can put some other modules */
     NULL,

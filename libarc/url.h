@@ -29,9 +29,6 @@
 
 #define URL_LIB_VERSION "1.9.5"
 
-/* Define if you want to enable pipe command scheme ("command|") */
-#define PIPE_SCHEME_ENABLE
-
 /* Define if you want to appended on a user's home directory if a filename
  * is beginning with '~'
  */
@@ -159,7 +156,6 @@ extern void url_add_modules(struct URL_module *m, ...);
 
 extern URL url_file_open(char *filename);
 extern URL url_dir_open(char *directory_name);
-extern URL url_pipe_open(char *command);
 
 /* No URL_module */
 extern URL url_mem_open(char *memory, long memsiz, int autofree);
@@ -178,7 +174,6 @@ enum url_types
     URL_none_t,			/* Undefined URL */
     URL_file_t,			/* File system */
     URL_dir_t,			/* Directory entry */
-    URL_pipe_t,			/* Pipe */
     URL_mem_t,			/* On memory */
     URL_buff_t,			/* Buffered stream */
     URL_arc_t,			/* arc stream */

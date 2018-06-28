@@ -38,11 +38,9 @@
 
 int url_errno;
 static struct URL_module *url_mod_list = NULL;
-char *user_mailaddr = NULL;
-char *url_user_agent = NULL;
+
 int url_newline_code = '\n';
 char *url_lib_version = URL_LIB_VERSION;
-int uudecode_unquote_html = 0;
 
 void url_add_module(struct URL_module *m)
 {

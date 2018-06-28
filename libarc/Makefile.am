@@ -41,7 +41,6 @@ libarc_a_SOURCES = \
 	url_dir.c \
 	url_file.c \
 	url_mem.c \
-	url_pipe.c \
 	zip.h
 
 libarc_a_LIBADD = $(NET_OBJS)
