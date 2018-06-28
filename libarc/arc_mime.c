@@ -268,13 +268,7 @@ ArchiveEntryNode *next_mime_entry(void)
 		    int c;
 		    while((c = url_getc(url)) != EOF)
 		    {
-			if(c == ':')
-			{
-			    comptype = ARCHIVEC_HQX;
-			    data_start = url_tell(url);
-			    break;
-			}
-			else if(c == '\n')
+		     if(c == '\n')
 			{
 			    if(++i >= MAX_CHECK_LINES)
 				break;
@@ -632,9 +626,6 @@ static void *arc_mime_decode(void *data, long size,
       url = url_b64decode_open(url, 1);
       break;
     case ARCHIVEC_QS:		/* quoted string encoded */
-      url = url_hqxdecode_open(url, 1, 1);
-      break;
-    case ARCHIVEC_HQX:		/* HQX encoded */
       url = url_qsdecode_open(url, 1);
       break;
     default:

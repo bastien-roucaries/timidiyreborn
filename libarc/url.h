@@ -179,7 +179,6 @@ extern void url_cache_detach(URL url);
 extern void url_cache_disable(URL url);
 extern URL url_uudecode_open(URL reader, int autoclose);
 extern URL url_b64decode_open(URL reader, int autoclose);
-extern URL url_hqxdecode_open(URL reader, int dataonly, int autoclose);
 extern URL url_qsdecode_open(URL reader, int autoclose);
 extern URL url_cgi_escape_open(URL reader, int autoclose);
 extern URL url_cgi_unescape_open(URL reader, int autoclose);
@@ -214,7 +213,6 @@ enum url_types
     URL_uudecode_t,		/* UU decoder */
     URL_b64decode_t,		/* Base64 decoder */
     URL_qsdecode_t,		/* Quoted-string decoder */
-    URL_hqxdecode_t,		/* HQX decoder */
     URL_cgi_escape_t,		/* WWW CGI Escape */
     URL_cgi_unescape_t,		/* WWW CGI Unescape */
     URL_arc_t,			/* arc stream */

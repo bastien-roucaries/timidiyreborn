@@ -846,7 +846,6 @@ static long url_arc_read(URL url, void *vp, long bufsiz)
       case ARCHIVEC_UU:		/* uu encoded */
       case ARCHIVEC_B64:	/* base64 encoded */
       case ARCHIVEC_QS:		/* quoted string encoded */
-      case ARCHIVEC_HQX:	/* HQX encoded */
 	n = url_read((URL)decoder, buff, bufsiz);
 	break;
     }
@@ -904,7 +903,6 @@ static void url_arc_close(URL url)
 	  case ARCHIVEC_UU:	/* uu encoded */
 	  case ARCHIVEC_B64:	/* base64 encoded */
 	  case ARCHIVEC_QS:	/* quoted string encoded */
-	  case ARCHIVEC_HQX:	/* HQX encoded */
 	    url_close((URL)decoder);
 	    break;
 	}
