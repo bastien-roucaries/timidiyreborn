@@ -298,7 +298,7 @@ static int import_wave_discriminant(char *sample_file)
 	struct timidity_file	*tf;
 	char				buf[12];
 	
-	if ((tf = open_file(sample_file, 1, OF_NORMAL)) == NULL)
+	if ((tf = open_file(sample_file, OF_NORMAL)) == NULL)
 		return 1;
 	if (tf_read(buf, 12, 1, tf) != 1
 			|| memcmp(&buf[0], "RIFF", 4) != 0 || memcmp(&buf[8], "WAVE", 4) != 0)
@@ -329,7 +329,7 @@ static int import_wave_load(char *sample_file, Instrument *inst)
 	WAVSamplerChunk	samplerc = {0,};
 	GeneralInstrumentInfo	instc;
 	
-	if ((tf = open_file(sample_file, 1, OF_NORMAL)) == NULL)
+	if ((tf = open_file(sample_file, OF_NORMAL)) == NULL)
 		return 1;
 	if (tf_read(buf, 12, 1, tf) != 1
 			|| memcmp(&buf[0], "RIFF", 4) != 0 || memcmp(&buf[8], "WAVE", 4) != 0)
@@ -576,7 +576,7 @@ static int import_aiff_discriminant(char *sample_file)
 	struct timidity_file	*tf;
 	char				buf[12];
 	
-	if ((tf = open_file(sample_file, 1, OF_NORMAL)) == NULL)
+	if ((tf = open_file(sample_file, OF_NORMAL)) == NULL)
 		return 1;
 	if (tf_read(buf, 12, 1, tf) != 1
 			|| memcmp(&buf[0], "FORM", 4) != 0 || memcmp(&buf[8], "AIF", 3) != 0
@@ -616,7 +616,7 @@ static int import_aiff_load(char *sample_file, Instrument *inst)
 	AIFFLoopInfo	loop_info = {0,0,0};
 	AIFFMarkerData	*marker_data;
 	
-	if ((tf = open_file(sample_file, 1, OF_NORMAL)) == NULL)
+	if ((tf = open_file(sample_file, OF_NORMAL)) == NULL)
 		return 1;
 	if (tf_read(buf, 12, 1, tf) != 1
 			|| memcmp(&buf[0], "FORM", 4) != 0 || memcmp(&buf[8], "AIF", 3) != 0

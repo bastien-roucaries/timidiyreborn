@@ -344,7 +344,7 @@ static void init_sf(SFInsts *rec)
 	ctl->cmsg(CMSG_INFO, VERB_NOISY, "Init soundfonts `%s'",
 		  FILENAME_REDUCED(rec->fname));
 
-	if ((rec->tf = open_file(rec->fname, 1, OF_VERBOSE)) == NULL) {
+	if ((rec->tf = open_file(rec->fname, OF_VERBOSE)) == NULL) {
 		ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
 			  "Can't open soundfont file %s",
 			  FILENAME_REDUCED(rec->fname));
@@ -449,7 +449,7 @@ static Instrument *try_load_soundfont(SFInsts *rec, int order, int bank,
 	if (rec->tf == NULL) {
 		if (rec->fname == NULL)
 			return NULL;
-		if ((rec->tf = open_file(rec->fname, 1, OF_VERBOSE)) == NULL) {
+		if ((rec->tf = open_file(rec->fname, OF_VERBOSE)) == NULL) {
 			ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
 				  "Can't open soundfont file %s",
 				  FILENAME_REDUCED(rec->fname));

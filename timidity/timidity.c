@@ -1258,7 +1258,7 @@ MAIN_INTERFACE int read_config_file(char *name, int self, int allow_missing_file
 	name = "(configuration)";
     }
     else
-	tf = open_file(name, 1, allow_missing_file ? OF_NORMAL : OF_VERBOSE);
+	tf = open_file(name, allow_missing_file ? OF_NORMAL : OF_VERBOSE);
     if(tf == NULL)
 	return allow_missing_file ? READ_CONFIG_FILE_NOT_FOUND :
 	                            READ_CONFIG_ERROR;
@@ -5250,7 +5250,6 @@ MAIN_INTERFACE void timidity_start_initialize(void)
 
     if(program_name == NULL)
 	program_name = "TiMidity";
-    uudecode_unquote_html = 1;
     for(i = 0; i < MAX_CHANNELS; i++)
     {
 	default_program[i] = DEFAULT_PROGRAM;

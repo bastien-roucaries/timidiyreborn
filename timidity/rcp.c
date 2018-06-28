@@ -104,7 +104,7 @@ int read_rcp_file(struct timidity_file *tf, char *magic0, char *fn)
     {
 	/* RCP or R36 */
 	gfmt = 0;
-	if(check_file_extension(fn, ".r36", 1))
+	if(check_file_extension(fn, ".r36"))
 	    current_file_info->file_type = IS_R36_FILE;
 	else
 	    current_file_info->file_type = IS_RCP_FILE;
@@ -113,7 +113,7 @@ int read_rcp_file(struct timidity_file *tf, char *magic0, char *fn)
     {
 	/* G36 or G18 */
 	gfmt = 1;
-	if(check_file_extension(fn, ".g18", 1))
+	if(check_file_extension(fn, ".g18"))
 	    current_file_info->file_type = IS_G18_FILE;
 	else
 	    current_file_info->file_type = IS_G36_FILE;

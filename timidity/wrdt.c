@@ -226,7 +226,7 @@ static struct timidity_file *try_wrd_open_file(char *prefix, char *fn)
 	path[len1] = '\0';
     }
     strcat(path, fn);
-    tf = open_file(path, 0, OF_SILENT);
+    tf = open_file(path, OF_SILENT);
     reuse_mblock(&buf);
     return tf;
 }
@@ -239,7 +239,7 @@ struct timidity_file *wrd_open_file(char *filename)
     struct timidity_file *tf;
 
     if(get_archive_type(filename) != -1)
-	return open_file(filename, 0, OF_SILENT);
+	return open_file(filename, OF_SILENT);
 
     for(path = path_list.head; path; path = path->next){
 	if((tf = try_wrd_open_file(path->string, filename)) != NULL)

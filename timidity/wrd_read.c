@@ -228,11 +228,11 @@ int import_wrd_file(char *fn)
 
     wrd_init_path();
     if(default_wrd_file2 != NULL)
-	tf = open_file((wfn = default_wrd_file2), 0, OF_NORMAL);
+	tf = open_file((wfn = default_wrd_file2), OF_NORMAL);
     else
 	tf = open_wrd_file(wfn = fn);
     if(tf == NULL && default_wrd_file1 != NULL)
-	tf = open_file((wfn = default_wrd_file1), 0, OF_NORMAL);
+	tf = open_file((wfn = default_wrd_file1), OF_NORMAL);
     if(tf == NULL)
     {
 	default_wrd_file1 = default_wrd_file2 = NULL;
@@ -1203,7 +1203,7 @@ static struct timidity_file *open_wrd_file(char *fn)
     else
 	strcpy(p + 1, "wrd");
 
-    tf = open_file(wrdfile, 0, OF_NORMAL);
+    tf = open_file(wrdfile, OF_NORMAL);
     reuse_mblock(&pool);
     return tf;
 }
@@ -2083,7 +2083,7 @@ static int import_sherrywrd_file(const char * fn)
 	if( cp==0 ) return 0;
 	
 	strncpy(cp+1, "sry", sizeof(sry_fn) - (cp - sry_fn) - 1);
-	tf= open_file( sry_fn, 0, OF_NORMAL);
+	tf= open_file( sry_fn, OF_NORMAL);
 	if( tf==NULL ) return 0;
 	if( sry_check_head(tf)!=0 ) return 0;
 	ctl->cmsg(CMSG_INFO, VERB_NORMAL,

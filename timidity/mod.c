@@ -81,28 +81,27 @@ load_module_file (struct timidity_file *tf, int mod_type)
   return 0;
 }
 
-
 int 
 get_module_type (char *fn)
 {
-  if (check_file_extension (fn, ".mod", 1))	/* Most common first */
+  if (check_file_extension (fn, ".mod"))	/* Most common first */
     return IS_MOD_FILE;
 
-  if (check_file_extension (fn, ".xm", 1)
-      || check_file_extension (fn, ".s3m", 1)
-      || check_file_extension (fn, ".it", 1)
-      || check_file_extension (fn, ".669", 1)	/* Then the others in alphabetic order */
-      || check_file_extension (fn, ".amf", 1)
-      || check_file_extension (fn, ".dsm", 1)
-      || check_file_extension (fn, ".far", 1)
-      || check_file_extension (fn, ".gdm", 1)
-      || check_file_extension (fn, ".imf", 1)
-      || check_file_extension (fn, ".med", 1)
-      || check_file_extension (fn, ".mtm", 1)
-      || check_file_extension (fn, ".stm", 1)
-      || check_file_extension (fn, ".stx", 1)
-      || check_file_extension (fn, ".ult", 1)
-      || check_file_extension (fn, ".uni", 1))
+  if (check_file_extension (fn, ".xm")
+      || check_file_extension (fn, ".s3m")
+      || check_file_extension (fn, ".it")
+      || check_file_extension (fn, ".669")	/* Then the others in alphabetic order */
+      || check_file_extension (fn, ".amf")
+      || check_file_extension (fn, ".dsm")
+      || check_file_extension (fn, ".far")
+      || check_file_extension (fn, ".gdm")
+      || check_file_extension (fn, ".imf")
+      || check_file_extension (fn, ".med")
+      || check_file_extension (fn, ".mtm")
+      || check_file_extension (fn, ".stm")
+      || check_file_extension (fn, ".stx")
+      || check_file_extension (fn, ".ult")
+      || check_file_extension (fn, ".uni"))
 
     return IS_S3M_FILE;
 

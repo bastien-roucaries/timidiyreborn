@@ -8381,7 +8381,7 @@ static int load_pcm_file_wav()
 
     ctl->cmsg(CMSG_INFO, VERB_NOISY,
 		      "wav filename: %s", filename);
-    current_file_info->pcm_tf = open_file(filename, 0, OF_SILENT);
+    current_file_info->pcm_tf = open_file(filename, OF_SILENT);
     if( current_file_info->pcm_tf ){
 	ctl->cmsg(CMSG_INFO, VERB_NOISY,
 		      "open successed.");
@@ -8417,7 +8417,7 @@ static int load_pcm_file_aiff()
 
     ctl->cmsg(CMSG_INFO, VERB_NOISY,
 		      "aiff filename: %s", filename);
-    current_file_info->pcm_tf = open_file(filename, 0, OF_SILENT);
+    current_file_info->pcm_tf = open_file(filename, OF_SILENT);
     if( current_file_info->pcm_tf ){
 	ctl->cmsg(CMSG_INFO, VERB_NOISY,
 		      "open successed.");
@@ -8457,7 +8457,7 @@ static int play_midi_load_file(char *fn,
 
     ctl_mode_event(CTLE_NOW_LOADING, 0, (long)fn, 0);
     ctl->cmsg(CMSG_INFO, VERB_VERBOSE, "MIDI file: %s", fn);
-    if((tf = open_midi_file(fn, 1, OF_VERBOSE)) == NULL)
+    if((tf = open_midi_file(fn, OF_VERBOSE)) == NULL)
     {
 	ctl_mode_event(CTLE_LOADING_DONE, 0, -1, 0);
 	return RC_ERROR;
@@ -8855,7 +8855,6 @@ void playmidi_stream_init(void)
     current_file_info->time_sig_b = 8;  /* q.n. */
     current_file_info->samples = 0;
     current_file_info->max_channel = MAX_CHANNELS;
-    current_file_info->compressed = 0;
     current_file_info->midi_data = NULL;
     current_file_info->midi_data_size = 0;
     current_file_info->file_type = IS_OTHER_FILE;

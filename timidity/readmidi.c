@@ -4964,7 +4964,7 @@ struct midi_file_info *get_midi_file_info(char *filename, int newp)
 }
 
 struct timidity_file *open_midi_file(char *fn,
-				     int decompress, int noise_mode)
+				     int noise_mode)
 {
     struct midi_file_info *infop;
     struct timidity_file *tf;
@@ -4974,20 +4974,11 @@ struct timidity_file *open_midi_file(char *fn,
 
     infop = get_midi_file_info(fn, 0);
     if(infop == NULL || infop->midi_data == NULL)
-	tf = open_file(fn, decompress, noise_mode);
+	tf = open_file(fn, noise_mode);
     else
     {
 	tf = open_with_mem(infop->midi_data, infop->midi_data_size,
 			   noise_mode);
-	if(infop->compressed)
-	{
-	    if((tf->url = url_inflate_open(tf->url, infop->midi_data_size, 1))
-	       == NULL)
-	    {
-		close_file(tf);
-		return NULL;
-	    }
-	}
     }
 
 #if defined(SMFCONV) && defined(__W32__)
@@ -5031,7 +5022,7 @@ int check_midi_file(char *filename)
 	return 0;
     }
 
-    tf = open_file(filename, 1, OF_SILENT);
+    tf = open_file(filename, OF_SILENT);
     if(tf == NULL)
 	return -1;
 
@@ -5145,7 +5136,7 @@ char *get_midi_title(char *filename)
 	    return get_midi_title1(p);
     }
 
-    tf = open_file(filename, 1, OF_SILENT);
+    tf = open_file(filename, OF_SILENT);
     if(tf == NULL)
 	return NULL;
 
@@ -5473,7 +5464,7 @@ int midi_file_save_as(char *in_name, char *out_name)
     ctl->cmsg(CMSG_INFO, VERB_NORMAL, "Save as %s...", out_name);
 
     errno = 0;
-    if((tf = open_midi_file(in_name, 1, 0)) == NULL)
+    if((tf = open_midi_file(in_name, 0)) == NULL)
     {
 	ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
 		  "%s: %s", out_name,

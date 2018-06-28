@@ -103,7 +103,7 @@ struct midi_file_info
     int32 samples;
     int max_channel;
     struct midi_file_info *next;
-    int compressed; /* True if midi_data is compressed */
+//    int compressed; /* True if midi_data is compressed */
     char *midi_data;
     int32 midi_data_size;
     int file_type;
@@ -151,7 +151,7 @@ extern void free_all_midi_file_info(void);
 extern int check_midi_file(char *filename);
 extern char *get_midi_title(char *filename);
 extern struct timidity_file *open_midi_file(char *name,
-					    int decompress, int noise_mode);
+					    int noise_mode);
 extern int midi_file_save_as(char *in_name, char *out_name);
 extern char *event2string(int id);
 extern void change_system_mode(int mode);

@@ -623,7 +623,7 @@ static Instrument *load_gus_instrument(char *name,
 	struct timidity_file *tf;
 	uint8 tmp[1024], fractions;
 	Sample *sp;
-	int i, j, noluck = 0;
+	int i, j;
 	
 	if (! name)
 		return 0;
@@ -662,33 +662,7 @@ static Instrument *load_gus_instrument(char *name,
 			return ip;
 		}
 	/* Open patch file */
-	if (! (tf = open_file_r(name, 2, OF_NORMAL))) {
-#ifdef PATCH_EXT_LIST
-		int name_len, ext_len;
-		static char *patch_ext[] = PATCH_EXT_LIST;
-#endif
-		
-		noluck = 1;
-#ifdef PATCH_EXT_LIST
-		name_len = strlen(name);
-		/* Try with various extensions */
-		for (i = 0; patch_ext[i]; i++) {
-			ext_len = strlen(patch_ext[i]);
-			if (name_len + ext_len < 1024) {
-				if (name_len >= ext_len && strcmp(name + name_len - ext_len,
-						patch_ext[i]) == 0)
-					continue;	/* duplicated ext. */
-				strcpy((char *) tmp, name);
-				strcat((char *) tmp, patch_ext[i]);
-				if ((tf = open_file_r((char *) tmp, 1, OF_NORMAL))) {
-					noluck = 0;
-					break;
-				}
-			}
-		}
-#endif
-	}
-	if (noluck) {
+	if (! (tf = open_file_r(name, OF_NORMAL))) {
 		ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
 				"Instrument `%s' can't be found.", name);
 		return 0;

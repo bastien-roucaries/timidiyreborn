@@ -164,38 +164,19 @@ extern void url_add_modules(struct URL_module *m, ...);
 
 extern URL url_file_open(char *filename);
 extern URL url_dir_open(char *directory_name);
-extern URL url_http_open(char *url_string);
-extern URL url_ftp_open(char *url_string);
-extern URL url_newsgroup_open(char *url_string);
-extern URL url_news_open(char *url_string);
 extern URL url_pipe_open(char *command);
 
 /* No URL_module */
 extern URL url_mem_open(char *memory, long memsiz, int autofree);
-extern URL url_inflate_open(URL instream, long compsize, int autoclose);
 extern URL url_buff_open(URL url, int autoclose);
 extern URL url_cache_open(URL url, int autoclose);
 extern void url_cache_detach(URL url);
 extern void url_cache_disable(URL url);
-extern URL url_uudecode_open(URL reader, int autoclose);
-extern URL url_b64decode_open(URL reader, int autoclose);
-extern URL url_qsdecode_open(URL reader, int autoclose);
-extern URL url_cgi_escape_open(URL reader, int autoclose);
-extern URL url_cgi_unescape_open(URL reader, int autoclose);
 
 extern char *url_dir_name(URL url);
-extern char *url_newsgroup_name(URL url);
-extern int url_news_connection_cache(int flag);
 
 extern char *url_lib_version;
-extern char *user_mailaddr;
-extern char *url_user_agent;
-extern char *url_http_proxy_host;
-extern unsigned short url_http_proxy_port;
-extern char *url_ftp_proxy_host;
-extern unsigned short url_ftp_proxy_port;
 extern int url_newline_code;
-extern int uudecode_unquote_html;
 
 enum url_types
 {
@@ -208,7 +189,6 @@ enum url_types
     URL_cache_t,		/* Cached stream */
     URL_arc_t,			/* arc stream */
 
-    URL_inflate_t = 99,		/* LZ77 decode stream */
 
     URL_extension_t = 100	/* extentional stream >= 100 */
 };

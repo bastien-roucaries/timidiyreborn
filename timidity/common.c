@@ -217,9 +217,8 @@ url_dumpfile(URL url, const char *ext)
 }
 
 
-/* Try to open a file for reading. If the filename ends in one of the
-   defined compressor extensions, pipe the file through the decompressor */
-struct timidity_file *try_to_open(char *name, int decompress)
+/* Try to open a file for reading */
+struct timidity_file *try_to_open(char *name)
 {
     struct timidity_file *tf;
     URL url;
@@ -233,105 +232,6 @@ struct timidity_file *try_to_open(char *name, int decompress)
     tf->url = url;
     tf->tmpname = NULL;
 
-    len = strlen(name);
-    if(decompress && len >= 3 && strcasecmp(name + len - 3, ".gz") == 0)
-    {
-	int method;
-
-	if(!IS_URL_SEEK_SAFE(tf->url))
-	{
-	    if((tf->url = url_cache_open(tf->url, 1)) == NULL)
-	    {
-		close_file(tf);
-		return NULL;
-	    }
-	}
-
-	method = skip_gzip_header(tf->url);
-	if(method == ARCHIVEC_DEFLATED)
-	{
-	    url_cache_disable(tf->url);
-	    if((tf->url = url_inflate_open(tf->url, -1, 1)) == NULL)
-	    {
-		close_file(tf);
-		return NULL;
-	    }
-
-	    /* success */
-	    return tf;
-	}
-	/* fail */
-	url_rewind(tf->url);
-	url_cache_disable(tf->url);
-    }
-
-#ifdef __W32__
-    /* Sorry, DECOMPRESSOR_LIST and PATCH_CONVERTERS are not worked yet. */
-    return tf;
-#endif /* __W32__ */
-
-#if defined(DECOMPRESSOR_LIST)
-    if(decompress)
-    {
-	static char *decompressor_list[] = DECOMPRESSOR_LIST, **dec;
-	char tmp[1024];
-
-	/* Check if it's a compressed file */
-	for(dec = decompressor_list; *dec; dec += 2)
-	{
-	    if(!check_file_extension(name, *dec, 0))
-		continue;
-
-	    tf->tmpname = url_dumpfile(tf->url, *dec);
-	    if (tf->tmpname == NULL) {
-		close_file(tf);
-		return NULL;
-	    }
-
-	    url_close(tf->url);
-	    snprintf(tmp, sizeof(tmp), *(dec+1), tf->tmpname);
-	    if((tf->url = url_pipe_open(tmp)) == NULL)
-	    {
-		close_file(tf);
-		return NULL;
-	    }
-
-	    break;
-	}
-    }
-#endif /* DECOMPRESSOR_LIST */
-
-#if defined(PATCH_CONVERTERS)
-    if(decompress == 2)
-    {
-	static char *decompressor_list[] = PATCH_CONVERTERS, **dec;
-	char tmp[1024];
-
-	/* Check if it's a compressed file */
-	for(dec = decompressor_list; *dec; dec += 2)
-	{
-	    if(!check_file_extension(name, *dec, 0))
-		continue;
-
-	    tf->tmpname = url_dumpfile(tf->url, *dec);
-	    if (tf->tmpname == NULL) {
-		close_file(tf);
-		return NULL;
-	    }
-
-	    url_close(tf->url);
-	    sprintf(tmp, *(dec+1), tf->tmpname);
-	    if((tf->url = url_pipe_open(tmp)) == NULL)
-	    {
-		close_file(tf);
-		return NULL;
-	    }
-
-	    break;
-	}
-    }
-#endif /* PATCH_CONVERTERS */
-    
     return tf;
 }
 
@@ -389,10 +289,9 @@ struct timidity_file *open_with_mem(char *mem, int32 memlen, int noise_mode)
 }
 
 /*
- * This is meant to find and open files for reading, possibly piping
- * them through a decompressor.
+ * This is meant to find and open files for reading
  */
-struct timidity_file *open_file(char *name, int decompress, int noise_mode)
+struct timidity_file *open_file(char *name, int noise_mode)
 {
 	struct timidity_file *tf;
 	PathList *plp = pathlist;
@@ -412,7 +311,7 @@ struct timidity_file *open_file(char *name, int decompress, int noise_mode)
 	if (noise_mode)
 		ctl->cmsg(CMSG_INFO, VERB_DEBUG, "Trying to open %s",
 				current_filename);
-	if ((tf = try_to_open(current_filename, decompress)))
+	if ((tf = try_to_open(current_filename)))
 		return tf;
 #ifdef __MACOS__
 	if (errno) {
@@ -442,7 +341,7 @@ struct timidity_file *open_file(char *name, int decompress, int noise_mode)
 			if (noise_mode)
 				ctl->cmsg(CMSG_INFO, VERB_DEBUG,
 						"Trying to open %s", current_filename);
-			if ((tf = try_to_open(current_filename, decompress)))
+			if ((tf = try_to_open(current_filename)))
 				 return tf;
 #ifdef __MACOS__
 			if(errno) {
@@ -468,7 +367,7 @@ struct timidity_file *open_file(char *name, int decompress, int noise_mode)
  * This is meant to find and open regular files for reading, possibly
  * piping them through a decompressor.
  */
-struct timidity_file *open_file_r(char *name, int decompress, int noise_mode)
+struct timidity_file *open_file_r(char *name, int noise_mode)
 {
 	struct stat st;
 	struct timidity_file *tf;
@@ -490,7 +389,7 @@ struct timidity_file *open_file_r(char *name, int decompress, int noise_mode)
 				current_filename);
 	stat(current_filename, &st);
 	if (!S_ISDIR(st.st_mode))
-		if ((tf = try_to_open(current_filename, decompress)))
+		if ((tf = try_to_open(current_filename)))
 			return tf;
 #ifdef __MACOS__
 	if (errno) {
@@ -522,7 +421,7 @@ struct timidity_file *open_file_r(char *name, int decompress, int noise_mode)
 						"Trying to open %s", current_filename);
 			stat(current_filename, &st);
 			if (!S_ISDIR(st.st_mode))
-				if ((tf = try_to_open(current_filename, decompress)))
+				if ((tf = try_to_open(current_filename)))
 					 return tf;
 #ifdef __MACOS__
 			if(errno) {
@@ -985,9 +884,9 @@ static char **expand_file_lists(char **files, int *nfiles_in_out)
 	{
 	    /* Playlist file */
             if(*files[i] == '@')
-		list_file = open_file(files[i] + 1, 1, 1);
+		list_file = open_file(files[i] + 1, 1);
             else
-		list_file = open_file(files[i], 1, 1);
+		list_file = open_file(files[i], 1);
             if(list_file)
 	    {
                 while(tf_gets(input_line, sizeof(input_line), list_file)
@@ -1075,43 +974,6 @@ int int_rand(int n)
 		 (1.0 / (0xffffffff + 1.0)));
 }
 #endif /* RAND_MAX */
-
-int check_file_extension(char *filename, char *ext, int decompress)
-{
-    int len, elen, i;
-#if defined(DECOMPRESSOR_LIST)
-    char *dlist[] = DECOMPRESSOR_LIST;
-#endif /* DECOMPRESSOR_LIST */
-
-    len = strlen(filename);
-    elen = strlen(ext);
-    if(len > elen && strncasecmp(filename + len - elen, ext, elen) == 0)
-	return 1;
-
-    if(decompress)
-    {
-	/* Check gzip'ed file name */
-
-	if(len > 3 + elen &&
-	   strncasecmp(filename + len - elen - 3 , ext, elen) == 0 &&
-	   strncasecmp(filename + len - 3, ".gz", 3) == 0)
-	    return 1;
-
-#if defined(DECOMPRESSOR_LIST)
-	for(i = 0; dlist[i]; i += 2)
-	{
-	    int dlen;
-
-	    dlen = strlen(dlist[i]);
-	    if(len > dlen + elen &&
-	       strncasecmp(filename + len - elen - dlen , ext, elen) == 0 &&
-	       strncasecmp(filename + len - dlen, dlist[i], dlen) == 0)
-		return 1;
-	}
-#endif /* DECOMPRESSOR_LIST */
-    }
-    return 0;
-}
 
 void randomize_string_list(char **strlist, int n)
 {

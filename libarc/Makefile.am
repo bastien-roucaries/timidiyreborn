@@ -41,7 +41,6 @@ libarc_a_SOURCES = \
 	url_cache.c \
 	url_dir.c \
 	url_file.c \
-	url_inflate.c \
 	url_mem.c \
 	url_pipe.c \
 	zip.h

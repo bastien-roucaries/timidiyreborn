@@ -24,6 +24,8 @@
 #ifndef ___COMMON_H_
 #define ___COMMON_H_
 
+#include <string.h>
+
 #include "sysdep.h"
 #include "url.h"
 #include "mblock.h"
@@ -51,9 +53,9 @@ struct timidity_file
 extern void add_to_pathlist(char *s);
 extern void clean_up_pathlist(void);
 extern int is_url_prefix(const char *name);
-extern struct timidity_file *open_file(char *name, int decompress,
+extern struct timidity_file *open_file(char *name,
 		int noise_mode);
-extern struct timidity_file *open_file_r(char *name, int decompress,
+extern struct timidity_file *open_file_r(char *name,
 		int noise_mode);
 extern struct timidity_file *open_with_mem(char *mem, int32 memlen,
 		int noise_mode);
@@ -66,7 +68,6 @@ extern long tf_read(void *buff, int32 size, int32 nitems,
 extern long tf_seek(struct timidity_file *tf, long offset, int whence);
 extern long tf_tell(struct timidity_file *tf);
 extern int int_rand(int n);	/* random [0..n-1] */
-extern int check_file_extension(char *filename, char *ext, int decompress);
 
 extern void *safe_malloc(size_t count);
 extern void *safe_realloc(void *old_ptr, size_t new_size);
@@ -82,6 +83,13 @@ extern int  load_table(char *file);
 extern char *pathsep_strrchr(const char *path);
 extern char *pathsep_strchr(const char *path);
 extern int str2mID(char *str);
+
+static int check_file_extension(const char * name, const char * ext)
+{
+    const char * dot = strrchr(name, '.');
+    if(!dot || dot == name) return 0;
+    return !strcmp(ext,dot);
+}
 
 
 /* code:
