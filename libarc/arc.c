@@ -70,8 +70,6 @@ static struct
     int type;
 } archive_ext_list[] =
 {
-    {".zip",	ARCHIVE_ZIP},
-    {".neo",	ARCHIVE_ZIP},
     {".lzh",	ARCHIVE_LZH},
     {".lha",	ARCHIVE_LZH},
     {PATH_STRING, ARCHIVE_DIR},
@@ -243,9 +241,6 @@ ArchiveEntryNode *arc_parse_entry(URL url, int archive_type)
     orig = NULL;
     switch(archive_type)
     {
-      case ARCHIVE_ZIP:
-	next_header_entry = next_zip_entry;
-	break;
       case ARCHIVE_LZH:
 	next_header_entry = next_lzh_entry;
 	break;
@@ -282,7 +277,6 @@ static ArchiveFileList *add_arc_filelist(char *basename, int archive_type)
 
     switch(archive_type)
     {
-      case ARCHIVE_ZIP:
       case ARCHIVE_LZH:
 	break;
       default:

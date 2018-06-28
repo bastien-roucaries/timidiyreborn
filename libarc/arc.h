@@ -83,8 +83,6 @@ typedef struct _ArchiveHandler {
 extern ArchiveHandler arc_handler;
 extern ArchiveEntryNode *arc_parse_entry(URL url, int archive_type);
 extern ArchiveEntryNode *new_entry_node(char *name, int len);
-extern ArchiveEntryNode *next_tar_entry(void);
-extern ArchiveEntryNode *next_zip_entry(void);
 extern ArchiveEntryNode *next_lzh_entry(void);
 extern void free_entry_node(ArchiveEntryNode *entry);
 
@@ -125,10 +123,8 @@ enum
 /* archive_type */
 enum
 {
-    ARCHIVE_ZIP,
     ARCHIVE_LZH,
     ARCHIVE_DIR,
-    ARCHIVE_NEWSGROUP
 };
 
 #endif /* ___LIBARC_H_ */
